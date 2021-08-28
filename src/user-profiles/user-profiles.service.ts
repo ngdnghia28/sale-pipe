@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateUserProfileDto } from './dto/create-user-profile.dto';
@@ -23,8 +23,13 @@ export class UserProfilesService {
     return this.repo.findOne(id);
   }
 
-  update(id: string, updateUserProfileDto: UpdateUserProfileDto) {
-    return this.repo.update(id, updateUserProfileDto);
+  async update(id: string, updateUserProfileDto: UpdateUserProfileDto) {
+    const userProfile = await this.findOne(id);
+    if (userProfile) {
+      return this.repo.save({ ...userProfile, ...updateUserProfileDto });
+    } else {
+      throw new NotFoundException(`User profile ${id} not found`)
+    }
   }
 
   remove(id: string) {

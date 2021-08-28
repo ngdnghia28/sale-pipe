@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, ValidationPipe } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
@@ -12,6 +12,7 @@ import { CountriesModule } from './countries/countries.module';
 import { LanguagesModule } from './languages/languages.module';
 import { IndustriesModule } from './industries/industries.module';
 import configuration from './config/configuration';
+import { APP_PIPE } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -49,6 +50,15 @@ import configuration from './config/configuration';
     IndustriesModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    {
+      provide: APP_PIPE,
+      useValue: new ValidationPipe({
+        whitelist: true,
+        forbidNonWhitelisted: true,
+        transform: true,
+      }),
+    },
+    AppService],
 })
-export class AppModule {}
+export class AppModule { }
