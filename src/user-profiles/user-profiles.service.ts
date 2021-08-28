@@ -12,7 +12,7 @@ export class UserProfilesService {
     private repo: Repository<UserProfile>) { }
 
   create(createUserProfileDto: CreateUserProfileDto) {
-    return this.repo.create(createUserProfileDto)
+    return this.repo.save(createUserProfileDto)
   }
 
   findAll() {

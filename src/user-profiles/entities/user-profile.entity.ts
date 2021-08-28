@@ -51,18 +51,26 @@ export class UserProfile extends Base {
   })
   countryId: string;
 
-  @OneToOne(() => Country)
-  @JoinColumn()
+  @OneToOne(() => Country, {
+    eager: true
+  })
+  @JoinColumn({
+    name: "country_id"
+  })
   country: Country;
 
-  @ManyToMany(() => Language)
+  @ManyToMany(() => Language, {
+    eager: true
+  })
   @JoinTable()
   languages: Language[];
 
   @Column()
   yose: number;
 
-  @ManyToMany(() => Industry)
+  @ManyToMany(() => Industry, {
+    eager: true
+  })
   @JoinTable()
   industries: Industry[];
 
