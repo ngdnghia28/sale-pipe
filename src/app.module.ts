@@ -29,8 +29,7 @@ import configuration from './config/configuration';
           return {
             ...conf,
             entities: [__dirname + '/**/*.entity{.ts,.js}'],
-            logging: true,
-            synchronize: true,
+            logging: true
           };
         }
       },
