@@ -7,7 +7,7 @@ import {
 
 export abstract class Base {
   @PrimaryGeneratedColumn('uuid')
-  id: number;
+  id: string;
 
   @CreateDateColumn({ name: 'created_at' })
   created_at: Date;

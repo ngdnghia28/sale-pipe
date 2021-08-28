@@ -1,8 +1,18 @@
 import { Base } from 'src/core/base.entity';
 import { Entity, Column } from 'typeorm';
 
+export enum UserType {
+  USER = 'USER',
+  HIRER = 'HIRER',
+}
 @Entity('users')
 export class User extends Base {
+  @Column({
+    type: 'enum',
+    enum: UserType
+  })
+  type: UserType;
+
   @Column({
     unique: true,
   })
@@ -16,12 +26,19 @@ export class User extends Base {
   @Column()
   password: string;
 
-  @Column()
+  @Column({
+    name: "first_name"
+  })
   firstName: string;
 
-  @Column()
+  @Column({
+    name: "last_name"
+  })
   lastName: string;
 
-  @Column({ default: true })
+  @Column({
+    default: true,
+    name: "is_active"
+  })
   isActive: boolean;
 }

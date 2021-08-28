@@ -7,6 +7,15 @@
         "include": "./config/*.yaml",
         "outDir": "./dist"
       }
+    ],
+    "plugins": [
+      {
+        "name": "@nestjs/swagger/plugin",
+        "options": {
+          "classValidatorShim": false,
+          "introspectComments": true
+        }
+      }
     ]
   }
 }
