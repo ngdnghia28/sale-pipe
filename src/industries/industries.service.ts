@@ -1,26 +1,33 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { CreateIndustryDto } from './dto/create-industry.dto';
 import { UpdateIndustryDto } from './dto/update-industry.dto';
+import { Industry } from './entities/industry.entity';
 
 @Injectable()
 export class IndustriesService {
+  constructor(
+    @InjectRepository(Industry)
+    private repo: Repository<Industry>) { }
+
   create(createIndustryDto: CreateIndustryDto) {
-    return 'This action adds a new industry';
+    return this.repo.create(createIndustryDto)
   }
 
   findAll() {
-    return `This action returns all industries`;
+    return this.repo.find();
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} industry`;
+    return this.repo.findOne(id);
   }
 
   update(id: number, updateIndustryDto: UpdateIndustryDto) {
-    return `This action updates a #${id} industry`;
+    return this.repo.update(id, updateIndustryDto);
   }
 
   remove(id: number) {
-    return `This action removes a #${id} industry`;
+    return this.repo.delete(id);
   }
 }
