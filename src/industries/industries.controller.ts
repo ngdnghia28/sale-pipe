@@ -19,16 +19,16 @@ export class IndustriesController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.industriesService.findOne(+id);
+    return this.industriesService.findOne(id);
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateIndustryDto: UpdateIndustryDto) {
-    return this.industriesService.update(+id, updateIndustryDto);
+    return this.industriesService.update(id, updateIndustryDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.industriesService.remove(+id);
+    return this.industriesService.remove(id);
   }
 }

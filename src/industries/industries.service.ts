@@ -19,15 +19,15 @@ export class IndustriesService {
     return this.repo.find();
   }
 
-  findOne(id: number) {
+  findOne(id: string) {
     return this.repo.findOne(id);
   }
 
-  update(id: number, updateIndustryDto: UpdateIndustryDto) {
+  update(id: string, updateIndustryDto: UpdateIndustryDto) {
     return this.repo.update(id, updateIndustryDto);
   }
 
-  remove(id: number) {
+  remove(id: string) {
     return this.repo.delete(id);
   }
 }

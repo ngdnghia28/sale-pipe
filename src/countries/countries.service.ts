@@ -19,15 +19,15 @@ export class CountriesService {
     return this.repo.find();
   }
 
-  findOne(id: number) {
+  findOne(id: string) {
     return this.repo.findOne(id);
   }
 
-  update(id: number, updateCountryDto: UpdateCountryDto) {
+  update(id: string, updateCountryDto: UpdateCountryDto) {
     return this.repo.update(id, updateCountryDto);
   }
 
-  remove(id: number) {
+  remove(id: string) {
     return this.repo.delete(id);
   }
 }

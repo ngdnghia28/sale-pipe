@@ -19,15 +19,15 @@ export class LanguagesService {
     return this.repo.find()
   }
 
-  findOne(id: number) {
+  findOne(id: string) {
     return this.repo.findOne(id);
   }
 
-  update(id: number, updateLanguageDto: UpdateLanguageDto) {
+  update(id: string, updateLanguageDto: UpdateLanguageDto) {
     return this.repo.update(id, updateLanguageDto);
   }
 
-  remove(id: number) {
+  remove(id: string) {
     return this.repo.delete(id);
   }
 }

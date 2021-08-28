@@ -19,16 +19,16 @@ export class UserProfilesController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.userProfilesService.findOne(+id);
+    return this.userProfilesService.findOne(id);
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateUserProfileDto: UpdateUserProfileDto) {
-    return this.userProfilesService.update(+id, updateUserProfileDto);
+    return this.userProfilesService.update(id, updateUserProfileDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.userProfilesService.remove(+id);
+    return this.userProfilesService.remove(id);
   }
 }

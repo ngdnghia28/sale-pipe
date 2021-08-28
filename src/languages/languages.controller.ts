@@ -19,16 +19,16 @@ export class LanguagesController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.languagesService.findOne(+id);
+    return this.languagesService.findOne(id);
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateLanguageDto: UpdateLanguageDto) {
-    return this.languagesService.update(+id, updateLanguageDto);
+    return this.languagesService.update(id, updateLanguageDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.languagesService.remove(+id);
+    return this.languagesService.remove(id);
   }
 }

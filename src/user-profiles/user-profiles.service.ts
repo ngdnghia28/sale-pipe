@@ -19,15 +19,15 @@ export class UserProfilesService {
     return this.repo.find();
   }
 
-  findOne(id: number) {
+  findOne(id: string) {
     return this.repo.findOne(id);
   }
 
-  update(id: number, updateUserProfileDto: UpdateUserProfileDto) {
+  update(id: string, updateUserProfileDto: UpdateUserProfileDto) {
     return this.repo.update(id, updateUserProfileDto);
   }
 
-  remove(id: number) {
+  remove(id: string) {
     return this.repo.delete(id);
   }
 }
