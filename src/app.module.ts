@@ -12,8 +12,9 @@ import { CountriesModule } from './countries/countries.module';
 import { LanguagesModule } from './languages/languages.module';
 import { IndustriesModule } from './industries/industries.module';
 import configuration from './config/configuration';
-import { APP_PIPE } from '@nestjs/core';
+import { APP_GUARD, APP_PIPE } from '@nestjs/core';
 import { CompanyProfilesModule } from './company-profiles/company-profiles.module';
+import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 
 @Module({
   imports: [
@@ -60,6 +61,10 @@ import { CompanyProfilesModule } from './company-profiles/company-profiles.modul
         forbidNonWhitelisted: true,
         transform: true,
       }),
+    },
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
     },
     AppService],
 })

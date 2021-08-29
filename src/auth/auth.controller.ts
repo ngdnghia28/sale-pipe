@@ -2,6 +2,7 @@ import { Body, Controller, Get, HttpCode, HttpStatus, Inject, Post, Request, Use
 import { ApiTags } from '@nestjs/swagger';
 import { UsersService } from 'src/users/users.service';
 import { AuthService } from './auth.service';
+import { Public } from './decorators/public.decorator';
 import { LoginDto } from './dto/login.dto';
 import { SignUpDto } from './dto/signup.dto';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
@@ -15,16 +16,19 @@ export class AuthController {
     @Inject(AuthService) private readonly authService: AuthService,
   ) { }
 
+  @Public()
   @Get('users')
   getUsers() {
     return this.usersService.findAll();
   }
 
+  @Public()
   @Post('signup')
   signup(@Body() dto: SignUpDto) {
     return this.authService.signup(dto);
   }
 
+  @Public()
   @UseGuards(LocalAuthGuard)
   @HttpCode(HttpStatus.OK)
   @Post('login')
@@ -32,7 +36,6 @@ export class AuthController {
     return this.authService.sign(req.user);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get('me')
   getProfile(@Request() req) {
     return req.user;

@@ -3,9 +3,11 @@ import { IndustriesService } from './industries.service';
 import { CreateIndustryDto } from './dto/create-industry.dto';
 import { UpdateIndustryDto } from './dto/update-industry.dto';
 import { ApiTags } from '@nestjs/swagger';
+import { Public } from 'src/auth/decorators/public.decorator';
 
 
 @ApiTags('Industries')
+@Public()
 @Controller('industries')
 export class IndustriesController {
   constructor(private readonly industriesService: IndustriesService) {}
