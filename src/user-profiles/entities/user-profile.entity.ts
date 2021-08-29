@@ -62,7 +62,9 @@ export class UserProfile extends Base {
   @ManyToMany(() => Language, {
     eager: true
   })
-  @JoinTable()
+  @JoinTable({
+    name: "user_profiles_languages"
+  })
   languages: Language[];
 
   @Column()
@@ -71,7 +73,9 @@ export class UserProfile extends Base {
   @ManyToMany(() => Industry, {
     eager: true
   })
-  @JoinTable()
+  @JoinTable({
+    name: "user_profiles_industries"
+  })
   industries: Industry[];
 
   @Column({
