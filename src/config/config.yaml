@@ -14,3 +14,8 @@ db:
   sqlite:
     type: "sqlite"
     database: "sqlite.db"
+
+auth:
+  secret: "12345"
+  signOptions:
+    expiresIn: "0.5d"
