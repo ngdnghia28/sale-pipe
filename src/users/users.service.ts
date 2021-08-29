@@ -2,6 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './user.entity';
+import { hash } from 'bcrypt';
+
+const HASH_ROUND = 10;
 
 @Injectable()
 export class UsersService {
@@ -10,7 +13,8 @@ export class UsersService {
     private usersRepository: Repository<User>,
   ) { }
 
-  create(dto: Partial<User>): Promise<User> {
+  async create(dto: Partial<User>): Promise<User> {
+    dto.password = await hash(dto.password, HASH_ROUND);
     return this.usersRepository.save(dto);
   }
 
@@ -20,6 +24,12 @@ export class UsersService {
 
   findOne(id: string): Promise<User> {
     return this.usersRepository.findOne(id);
+  }
+
+  findByEmail(email: string): Promise<User> {
+    return this.usersRepository.findOneOrFail({
+      email
+    });
   }
 
   async delete(id: string): Promise<void> {
