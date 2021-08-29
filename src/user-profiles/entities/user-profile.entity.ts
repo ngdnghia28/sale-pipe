@@ -5,7 +5,7 @@ import { Language } from "src/languages/entities/language.entity";
 import { User } from "src/users/user.entity";
 import { Column, Entity, JoinColumn, JoinTable, ManyToMany, OneToOne } from "typeorm";
 
-@Entity()
+@Entity('user_profiles')
 export class UserProfile extends Base {
   @Column({
     name: "user_id"
