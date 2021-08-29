@@ -1,8 +1,10 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { CompanyProfilesService } from './company-profiles.service';
 import { CreateCompanyProfileDto } from './dto/create-company-profile.dto';
 import { UpdateCompanyProfileDto } from './dto/update-company-profile.dto';
 
+@ApiTags("CompanyProfiles")
 @Controller('company-profiles')
 export class CompanyProfilesController {
   constructor(private readonly companyProfilesService: CompanyProfilesService) { }
