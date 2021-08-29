@@ -1,6 +1,7 @@
 import {getRepository, MigrationInterface, QueryRunner} from "typeorm";
 
-export class countriesLanguagesSeedData1630137426538 implements MigrationInterface {
+
+export class countriesLanguagesSeedData1630225137869 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await getRepository("countries").save([

@@ -13,6 +13,7 @@ import { LanguagesModule } from './languages/languages.module';
 import { IndustriesModule } from './industries/industries.module';
 import configuration from './config/configuration';
 import { APP_PIPE } from '@nestjs/core';
+import { CompanyProfilesModule } from './company-profiles/company-profiles.module';
 
 @Module({
   imports: [
@@ -48,6 +49,7 @@ import { APP_PIPE } from '@nestjs/core';
     CountriesModule,
     LanguagesModule,
     IndustriesModule,
+    CompanyProfilesModule,
   ],
   controllers: [AppController],
   providers: [

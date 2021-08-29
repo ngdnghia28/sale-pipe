@@ -5,7 +5,7 @@ import { Language } from "src/languages/entities/language.entity";
 import { User } from "src/users/user.entity";
 import { Column, Entity, JoinColumn, JoinTable, ManyToMany, OneToOne } from "typeorm";
 
-@Entity()
+@Entity('user_profiles')
 export class UserProfile extends Base {
   @Column({
     name: "user_id"
@@ -62,7 +62,9 @@ export class UserProfile extends Base {
   @ManyToMany(() => Language, {
     eager: true
   })
-  @JoinTable()
+  @JoinTable({
+    name: "user_profiles_languages"
+  })
   languages: Language[];
 
   @Column()
@@ -71,7 +73,9 @@ export class UserProfile extends Base {
   @ManyToMany(() => Industry, {
     eager: true
   })
-  @JoinTable()
+  @JoinTable({
+    name: "user_profiles_industries"
+  })
   industries: Industry[];
 
   @Column({
