@@ -1,6 +1,8 @@
 import { Exclude } from 'class-transformer';
+import { Role } from 'src/auth/entities/role.entity';
 import { Base } from 'src/core/base.entity';
-import { Entity, Column } from 'typeorm';
+import { Roles } from 'src/shared/constant';
+import { Entity, Column, ManyToMany, JoinTable } from 'typeorm';
 
 export enum UserType {
   USER = 'USER',
@@ -24,9 +26,19 @@ export class User extends Base {
   })
   email: string;
 
+
+
   @Column()
   @Exclude()
   password: string;
+
+  @ManyToMany(() => Role, {
+    eager: true
+  })
+  @JoinTable({
+    name: "users_roles"
+  })
+  roles: Role[];
 
   @Column({
     name: "first_name"
