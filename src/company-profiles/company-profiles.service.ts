@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateCompanyProfileDto } from './dto/create-company-profile.dto';
@@ -11,8 +11,13 @@ export class CompanyProfilesService {
     @InjectRepository(CompanyProfile)
     private repo: Repository<CompanyProfile>) { }
 
-  create(ccreateCompanyProfileDto: CreateCompanyProfileDto) {
-    return this.repo.save(ccreateCompanyProfileDto)
+  async create(createCompanyProfileDto: CreateCompanyProfileDto) {
+    const profile = await this.findByUserId(createCompanyProfileDto.userId);
+    if (profile) {
+      throw new HttpException(`Profile already exist for ${createCompanyProfileDto.userId}`, 400)
+    } else {
+      return this.repo.save(createCompanyProfileDto)
+    }
   }
 
   findAll() {
@@ -23,8 +28,27 @@ export class CompanyProfilesService {
     return this.repo.findOne(id);
   }
 
+  async findByUserId(userId: string) {
+    const profiles = await this.repo.find({
+      where: {
+        userId
+      }
+    });
+
+    return profiles ? profiles[0] : null;
+  }
+
   async update(id: string, updateCompanyProfileDto: UpdateCompanyProfileDto) {
     return this.repo.update(id, updateCompanyProfileDto);
+  }
+
+  async updateByUserId(userId: string, updateCompanyProfileDto: UpdateCompanyProfileDto) {
+    const profile = await this.findByUserId(userId);
+    if (profile) {
+      return this.repo.update(profile.id, updateCompanyProfileDto);
+    } else {
+      throw new HttpException(`Profile not fount for ${userId}`, 400);
+    }
   }
 
   remove(id: string) {

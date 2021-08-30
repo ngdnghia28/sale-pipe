@@ -1,3 +1,4 @@
+import { HttpException } from '@nestjs/common';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -11,7 +12,25 @@ export class UserProfilesService {
     @InjectRepository(UserProfile)
     private repo: Repository<UserProfile>) { }
 
-  create(createUserProfileDto: CreateUserProfileDto) {
+  // because of this: https://github.com/typeorm/typeorm/issues/2200
+  // we need to use find instead
+  async findByUserId(id: string) {
+    const profiles = await this.repo.find({
+      where: {
+        userId: id
+      }
+    })
+
+    return profiles ? profiles[0] : null
+  }
+
+  async create(createUserProfileDto: CreateUserProfileDto) {
+    const profile = await this.findByUserId(createUserProfileDto.userId);
+
+    if (profile) {
+      throw new HttpException(`Profile already exist for ${createUserProfileDto.userId}`, 400)
+    }
+
     return this.repo.save(createUserProfileDto)
   }
 
@@ -29,6 +48,15 @@ export class UserProfilesService {
       return this.repo.save({ ...userProfile, ...updateUserProfileDto });
     } else {
       throw new NotFoundException(`User profile ${id} not found`)
+    }
+  }
+
+  async updateByUserId(userId: string, updateUserProfileDto: UpdateUserProfileDto) {
+    const userProfile = await this.findByUserId(userId);
+    if (userProfile) {
+      return this.repo.save({ ...userProfile, ...updateUserProfileDto });
+    } else {
+      throw new NotFoundException(`User profile for user ${userId} not found`)
     }
   }
 

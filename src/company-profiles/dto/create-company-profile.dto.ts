@@ -1,3 +1,4 @@
+import { OmitType } from "@nestjs/swagger";
 import { IsEmail, IsOptional, IsString, IsUrl, IsUUID } from "class-validator";
 
 export class CreateCompanyProfileDto {
@@ -25,3 +26,5 @@ export class CreateCompanyProfileDto {
   @IsOptional()
   website?: string;
 }
+
+export class CreateMyCompanyProfileDto extends OmitType(CreateCompanyProfileDto, ['userId']) { }
