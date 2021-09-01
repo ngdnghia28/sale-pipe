@@ -11,9 +11,13 @@ db:
     username: "devblock"
     password: "Abc123456"
 
-  sqlite:
-    type: "sqlite"
-    database: "sqlite.db"
+  test:
+    type: "mysql"
+    host: "127.0.0.1"
+    port: 3306
+    database: "test"
+    username: "devblock"
+    password: "Abc123456"
 
 auth:
   secret: "12345"

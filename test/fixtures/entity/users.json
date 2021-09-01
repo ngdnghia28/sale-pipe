@@ -1,0 +1,41 @@
+[
+  {
+    "type": "USER",
+    "username": "admin",
+    "email": "admin@gmail.com",
+    "password": "$2b$10$GXdCKl71U4UAaBGvHcaQ5.NHcjDmulddTM5Zga6bwsdoB1gu8ubW6",
+    "firstName": "admin",
+    "lastName": "admin",
+    "isActive": true,
+    "id": "4f0a22bd-6942-4590-b1b5-e5c1ad0f763b",
+    "createdAt": "2021-08-31T03:39:47.783Z",
+    "updatedAt": "2021-08-31T03:39:47.783Z",
+    "version": 1
+  },
+  {
+    "type": "USER",
+    "username": "user",
+    "email": "user@gmail.com",
+    "password": "$2b$10$GXdCKl71U4UAaBGvHcaQ5.NHcjDmulddTM5Zga6bwsdoB1gu8ubW6",
+    "firstName": "user",
+    "lastName": "user",
+    "isActive": true,
+    "id": "00f99098-0a48-11ec-bd3f-0242ac140002",
+    "createdAt": "2021-08-31T03:39:47.783Z",
+    "updatedAt": "2021-08-31T03:39:47.783Z",
+    "version": 1
+  },
+  {
+    "type": "HIRER",
+    "username": "hirer",
+    "email": "hirer@gmail.com",
+    "password": "$2b$10$GXdCKl71U4UAaBGvHcaQ5.NHcjDmulddTM5Zga6bwsdoB1gu8ubW6",
+    "firstName": "hirer",
+    "lastName": "hirer",
+    "isActive": true,
+    "id": "0a089336-0a48-11ec-bd3f-0242ac140002",
+    "createdAt": "2021-08-31T03:39:47.783Z",
+    "updatedAt": "2021-08-31T03:39:47.783Z",
+    "version": 1
+  }
+]

@@ -15,10 +15,10 @@ roles
   .grant(Roles.HIRER)
   .createOwn(Resources.COMPANY_PROFILES)
   .updateOwn(Resources.COMPANY_PROFILES)
-  .readOwn(Resources.COMPANY_PROFILES)
   .readAny(Resources.USER_PROFILES)
 
   .grant(Roles.ADMIN)
   .createAny(publicResources)
+  .updateAny(publicResources)
+  .deleteAny(allResources)
   .readAny(allResources)
-  .deleteAny(allResources);
