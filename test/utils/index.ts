@@ -8,6 +8,7 @@ import { Connection, ConnectionManager } from 'typeorm';
 const ignoreEntities = [
   'countries',
   'languages',
+  'industries',
   'roles'
 ]
 
@@ -87,8 +88,7 @@ export async function provideConnection(configService: ConfigService) {
   const cm = new ConnectionManager();
   const connection = cm.create({
     ...configService.get('db.test'),
-    entities: [__dirname + '/../../**/*.entity.js'],
-    logging: true
+    entities: [__dirname + '/../../**/*.entity.js']
   });
   await connection.connect();
   return connection;
