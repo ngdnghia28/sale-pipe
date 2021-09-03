@@ -35,6 +35,12 @@ export class User extends Base {
   })
   @JoinTable({
     name: 'users_roles',
+    joinColumn: {
+      name: 'usersId',
+    },
+    inverseJoinColumn: {
+      name: 'rolesId',
+    },
   })
   roles: Role[];
 

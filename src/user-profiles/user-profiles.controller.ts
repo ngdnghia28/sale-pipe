@@ -19,6 +19,7 @@ import { UseRoles } from 'nest-access-control';
 import { Actions, Resources } from 'src/shared/constant';
 import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
 import { User } from 'src/users/user.entity';
+import { UpdateAvailableUserProfileDto } from './dto/update-available-profile.dto';
 
 @ApiTags('UserProfiles')
 @Controller('user-profiles')
@@ -60,6 +61,7 @@ export class UserProfilesController {
   findAll() {
     return this.userProfilesService.findAll({
       isVerified: true,
+      isAvailable: true,
     });
   }
 
@@ -99,6 +101,22 @@ export class UserProfilesController {
     return this.userProfilesService.updateByUserId(
       user.id,
       updateUserProfileDto,
+    );
+  }
+
+  @UseRoles({
+    resource: Resources.USER_PROFILES,
+    action: Actions.UPDATE,
+    possession: 'own',
+  })
+  @Patch('my/status')
+  setAvailable(
+    @CurrentUser() user: User,
+    @Body() dto: UpdateAvailableUserProfileDto,
+  ) {
+    return this.userProfilesService.setAvailableByUser(
+      user.id,
+      dto.isAvailable,
     );
   }
 

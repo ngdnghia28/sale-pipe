@@ -463,5 +463,38 @@ describe('User-profiles (e2e)', () => {
       expect(profile.rate).toBeDefined();
       expect(profile.hours_per_week).toBeDefined();
     });
+
+    it('/user-profiles/my/status (PATCH): Owner can switch avaiability status', async () => {
+      let response = await request(app.getHttpServer())
+        .patch('/user-profiles/my/status')
+        .set('Authorization', `Bearer ${userToken}`)
+        .send({
+          isAvailable: false,
+        });
+
+      expect(response.status).toBe(200);
+
+      response = await request(app.getHttpServer())
+        .get('/user-profiles/my')
+        .set('Authorization', `Bearer ${userToken}`);
+
+      expect(response.status).toBe(200);
+      expect(response.body.isAvailable).toBe(false);
+
+      response = await request(app.getHttpServer())
+        .patch('/user-profiles/my/status')
+        .set('Authorization', `Bearer ${userToken}`)
+        .send({
+          isAvailable: true,
+        });
+      expect(response.status).toBe(200);
+
+      response = await request(app.getHttpServer())
+        .get('/user-profiles/my')
+        .set('Authorization', `Bearer ${userToken}`);
+
+      expect(response.status).toBe(200);
+      expect(response.body.isAvailable).toBe(true);
+    });
   });
 });

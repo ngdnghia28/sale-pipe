@@ -38,7 +38,7 @@ export class UserProfilesService {
     return this.repo.save(createUserProfileDto);
   }
 
-  findAll(options?: Pick<UserProfile, 'isVerified'>) {
+  findAll(options?: Pick<UserProfile, 'isVerified' | 'isAvailable'>) {
     return this.repo.find({
       where: options,
     });
@@ -60,11 +60,22 @@ export class UserProfilesService {
   async verifiedProfile(id: string) {
     const userProfile = await this.findOne(id);
     if (userProfile) {
-      return this.repo.update(id, {
-        isVerified: true,
-      });
+      return this.repo.update(id, { isVerified: true });
     } else {
       throw new NotFoundException(`User profile ${id} not found`);
+    }
+  }
+
+  async setAvailableByUser(userId: string, isAvailable: boolean) {
+    const userProfile = await this.repo.findOne({
+      where: {
+        userId,
+      },
+    });
+    if (userProfile) {
+      return this.repo.update(userProfile.id, { isAvailable: isAvailable });
+    } else {
+      throw new NotFoundException(`User profile for user ${userId} not found`);
     }
   }
 

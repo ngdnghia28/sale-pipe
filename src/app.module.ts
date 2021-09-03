@@ -1,23 +1,28 @@
-import { ClassSerializerInterceptor, Module, ValidationPipe } from '@nestjs/common';
+import {
+  ClassSerializerInterceptor,
+  Module,
+  ValidationPipe,
+} from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { APP_GUARD, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { AccessControlModule } from 'nest-access-control';
+import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { AppController } from './app.controller';
+import { roles } from './app.roles';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
-import { UsersModule } from './users/users.module';
+import { ACAuthGuard } from './auth/guards/ac-auth.guard';
+import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
+import { CompanyProfilesModule } from './company-profiles/company-profiles.module';
+import configuration from './config/configuration';
 import { CoreModule } from './core/core.module';
+import { CountriesModule } from './countries/countries.module';
+import { IndustriesModule } from './industries/industries.module';
+import { LanguagesModule } from './languages/languages.module';
 import { SharedModule } from './shared/shared.module';
 import { UserProfilesModule } from './user-profiles/user-profiles.module';
-import { CountriesModule } from './countries/countries.module';
-import { LanguagesModule } from './languages/languages.module';
-import { IndustriesModule } from './industries/industries.module';
-import configuration from './config/configuration';
-import { APP_GUARD, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
-import { CompanyProfilesModule } from './company-profiles/company-profiles.module';
-import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
-import { roles } from './app.roles';
-import { AccessControlModule } from 'nest-access-control';
-import { ACAuthGuard } from './auth/guards/ac-auth.guard';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -36,12 +41,14 @@ import { ACAuthGuard } from './auth/guards/ac-auth.guard';
         if (env === 'production') {
           return {
             entities: [__dirname + '/**/*.entity{.ts,.js}'],
+            namingStrategy: new SnakeNamingStrategy(),
             ...conf,
           };
         } else {
           return {
             entities: [__dirname + '/**/*.entity{.ts,.js}'],
             logging: true,
+            namingStrategy: new SnakeNamingStrategy(),
             ...conf,
           };
         }

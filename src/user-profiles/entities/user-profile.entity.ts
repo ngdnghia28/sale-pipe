@@ -31,6 +31,12 @@ export class UserProfile extends Base {
   })
   isVerified: boolean;
 
+  @Column({
+    name: 'is_available',
+    default: true,
+  })
+  isAvailable: boolean;
+
   @Expose({
     groups: ['owner'],
   })
@@ -94,6 +100,12 @@ export class UserProfile extends Base {
   })
   @JoinTable({
     name: 'user_profiles_languages',
+    joinColumn: {
+      name: 'userProfilesId',
+    },
+    inverseJoinColumn: {
+      name: 'languagesId',
+    },
   })
   languages: Language[];
 
@@ -105,6 +117,12 @@ export class UserProfile extends Base {
   })
   @JoinTable({
     name: 'user_profiles_industries',
+    joinColumn: {
+      name: 'userProfilesId',
+    },
+    inverseJoinColumn: {
+      name: 'industriesId',
+    },
   })
   industries: Industry[];
 
