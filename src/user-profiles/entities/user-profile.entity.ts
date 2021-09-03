@@ -1,3 +1,4 @@
+import { Expose } from 'class-transformer';
 import { Base } from 'src/core/base.entity';
 import { Country } from 'src/countries/entities/country.entity';
 import { Industry } from 'src/industries/entities/industry.entity';
@@ -30,20 +31,35 @@ export class UserProfile extends Base {
   })
   isVerified: boolean;
 
+  @Expose({
+    groups: ['owner'],
+  })
   @Column()
   phone: string;
 
+  @Expose({
+    groups: ['owner'],
+  })
   @Column()
   email: string;
 
+  @Expose({
+    groups: ['owner'],
+  })
   @Column({
     nullable: true,
   })
   linked_in?: string;
 
+  @Expose({
+    groups: ['owner'],
+  })
   @Column()
   rate: string;
 
+  @Expose({
+    groups: ['owner'],
+  })
   @Column()
   hours_per_week: number;
 

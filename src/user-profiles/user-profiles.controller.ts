@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  SerializeOptions,
 } from '@nestjs/common';
 import { UserProfilesService } from './user-profiles.service';
 import {
@@ -22,7 +23,7 @@ import { User } from 'src/users/user.entity';
 @ApiTags('UserProfiles')
 @Controller('user-profiles')
 export class UserProfilesController {
-  constructor(private readonly userProfilesService: UserProfilesService) {}
+  constructor(private readonly userProfilesService: UserProfilesService) { }
 
   @UseRoles({
     resource: Resources.USER_PROFILES,
@@ -62,6 +63,9 @@ export class UserProfilesController {
     });
   }
 
+  @SerializeOptions({
+    groups: ['owner'],
+  })
   @UseRoles({
     resource: Resources.USER_PROFILES,
     action: Actions.READ,

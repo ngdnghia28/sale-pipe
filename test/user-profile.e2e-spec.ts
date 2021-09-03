@@ -3,6 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from 'src/app.module';
 import configuration from 'src/config/configuration';
+import { UserProfile } from 'src/user-profiles/entities/user-profile.entity';
 import * as request from 'supertest';
 import { provideConnection, TestUtils } from './utils';
 
@@ -253,6 +254,7 @@ describe('User-profiles (e2e)', () => {
   describe('Bussiness (e2e)', () => {
     let adminToken: string;
     let hirerToken: string;
+    let userToken: string;
     beforeAll(async () => {
       const response = await request(app.getHttpServer())
         .post('/auth/login')
@@ -275,6 +277,17 @@ describe('User-profiles (e2e)', () => {
       adminToken = response2.body.access_token;
 
       expect(adminToken).toBeDefined();
+
+      const response3 = await request(app.getHttpServer())
+        .post('/auth/login')
+        .send({
+          email: 'user@gmail.com',
+          password: 'password',
+        });
+
+      userToken = response3.body.access_token;
+
+      expect(userToken).toBeDefined();
     });
 
     it('/user-profiles (GET): Only get verified profiles', async () => {
@@ -393,6 +406,62 @@ describe('User-profiles (e2e)', () => {
       expect(response.status).toBe(200);
       const profiles = response.body;
       expect(profiles.length).toBe(1);
+    });
+
+    it('/user-profiles (GET): Can see only public fields', async () => {
+      const response = await request(app.getHttpServer())
+        .get('/user-profiles')
+        .set('Authorization', `Bearer ${hirerToken}`);
+
+      expect(response.status).toBe(200);
+      const profile: UserProfile = response.body[0];
+      expect(profile).toBeDefined();
+      expect(profile.email).toBeUndefined();
+      expect(profile.phone).toBeUndefined();
+      expect(profile.linked_in).toBeUndefined();
+      expect(profile.rate).toBeUndefined();
+      expect(profile.hours_per_week).toBeUndefined();
+    });
+
+    it('/user-profiles/my (GET): Owner can see all fields', async () => {
+      let response = await request(app.getHttpServer())
+        .post('/user-profiles/my')
+        .set('Authorization', `Bearer ${userToken}`)
+        .send({
+          phone: '+84912333444',
+          email: 'email@gmail.com',
+          rate: '20',
+          hours_per_week: 20,
+          avatar: 'http://avatar.com/img.jpg',
+          headline: 'headline',
+          bio: 'bio',
+          countryId: 'dba7019a-29b7-45ff-a659-1e10615e13ff',
+          languages: [
+            {
+              id: '253c634a-59ae-451f-9dac-d2362ccf6b24',
+            },
+          ],
+          yose: 3,
+          industries: [
+            {
+              id: '0ca30200-b277-4912-a3f4-cf1e9e71764c',
+            },
+          ],
+        });
+      expect(response.status).toBe(201);
+
+      response = await request(app.getHttpServer())
+        .get('/user-profiles/my')
+        .set('Authorization', `Bearer ${userToken}`);
+
+      expect(response.status).toBe(200);
+      const profile: UserProfile = response.body;
+      expect(profile).toBeDefined();
+      expect(profile.email).toBeDefined();
+      expect(profile.phone).toBeDefined();
+      expect(profile.linked_in).toBeDefined();
+      expect(profile.rate).toBeDefined();
+      expect(profile.hours_per_week).toBeDefined();
     });
   });
 });
