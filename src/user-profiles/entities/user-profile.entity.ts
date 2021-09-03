@@ -1,3 +1,4 @@
+import { Expose } from 'class-transformer';
 import { Base } from 'src/core/base.entity';
 import { Country } from 'src/countries/entities/country.entity';
 import { Industry } from 'src/industries/entities/industry.entity';
@@ -9,6 +10,7 @@ import {
   JoinColumn,
   JoinTable,
   ManyToMany,
+  ManyToOne,
   OneToOne,
 } from 'typeorm';
 
@@ -23,20 +25,47 @@ export class UserProfile extends Base {
   @JoinColumn()
   user: User;
 
+  @Column({
+    name: 'is_verified',
+    default: false,
+  })
+  isVerified: boolean;
+
+  @Column({
+    name: 'is_available',
+    default: true,
+  })
+  isAvailable: boolean;
+
+  @Expose({
+    groups: ['owner'],
+  })
   @Column()
   phone: string;
 
+  @Expose({
+    groups: ['owner'],
+  })
   @Column()
   email: string;
 
+  @Expose({
+    groups: ['owner'],
+  })
   @Column({
     nullable: true,
   })
   linked_in?: string;
 
+  @Expose({
+    groups: ['owner'],
+  })
   @Column()
   rate: string;
 
+  @Expose({
+    groups: ['owner'],
+  })
   @Column()
   hours_per_week: number;
 
@@ -58,7 +87,7 @@ export class UserProfile extends Base {
   })
   countryId: string;
 
-  @OneToOne(() => Country, {
+  @ManyToOne(() => Country, {
     eager: true,
   })
   @JoinColumn({
@@ -71,6 +100,12 @@ export class UserProfile extends Base {
   })
   @JoinTable({
     name: 'user_profiles_languages',
+    joinColumn: {
+      name: 'userProfilesId',
+    },
+    inverseJoinColumn: {
+      name: 'languagesId',
+    },
   })
   languages: Language[];
 
@@ -82,6 +117,12 @@ export class UserProfile extends Base {
   })
   @JoinTable({
     name: 'user_profiles_industries',
+    joinColumn: {
+      name: 'userProfilesId',
+    },
+    inverseJoinColumn: {
+      name: 'industriesId',
+    },
   })
   industries: Industry[];
 

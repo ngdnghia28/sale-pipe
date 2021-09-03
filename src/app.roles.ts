@@ -31,4 +31,5 @@ roles
   .createAny(publicResources)
   .updateAny(publicResources)
   .deleteAny(allResources)
+  .updateAny([Resources.USER_PROFILES])
   .readAny(allResources);

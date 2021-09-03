@@ -4,17 +4,34 @@ import { LoginDto } from './dto/login.dto';
 import { SignUpDto } from './dto/signup.dto';
 import { compare } from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
-import { User } from 'src/users/user.entity';
+import { User, UserType } from 'src/users/user.entity';
 
 @Injectable()
 export class AuthService {
   constructor(
     @Inject(UsersService) private readonly usersService: UsersService,
     @Inject(JwtService) private jwtService: JwtService,
-  ) {}
+  ) { }
 
   signup(dto: SignUpDto) {
-    return this.usersService.create(dto);
+    const user: any = { ...dto };
+    switch (dto.type) {
+      case UserType.USER:
+        user.roles = [
+          {
+            id: '90df268d-0947-11ec-9b25-0242ac140002',
+          },
+        ];
+        break;
+      case UserType.HIRER:
+        user.roles = [
+          {
+            id: '0378cee7-0948-11ec-9b25-0242ac140002',
+          },
+        ];
+        break;
+    }
+    return this.usersService.create(user);
   }
 
   async login(dto: LoginDto) {

@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  SerializeOptions,
 } from '@nestjs/common';
 import { UserProfilesService } from './user-profiles.service';
 import {
@@ -18,11 +19,12 @@ import { UseRoles } from 'nest-access-control';
 import { Actions, Resources } from 'src/shared/constant';
 import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
 import { User } from 'src/users/user.entity';
+import { UpdateAvailableUserProfileDto } from './dto/update-available-profile.dto';
 
 @ApiTags('UserProfiles')
 @Controller('user-profiles')
 export class UserProfilesController {
-  constructor(private readonly userProfilesService: UserProfilesService) {}
+  constructor(private readonly userProfilesService: UserProfilesService) { }
 
   @UseRoles({
     resource: Resources.USER_PROFILES,
@@ -57,9 +59,15 @@ export class UserProfilesController {
   })
   @Get()
   findAll() {
-    return this.userProfilesService.findAll();
+    return this.userProfilesService.findAll({
+      isVerified: true,
+      isAvailable: true,
+    });
   }
 
+  @SerializeOptions({
+    groups: ['owner'],
+  })
   @UseRoles({
     resource: Resources.USER_PROFILES,
     action: Actions.READ,
@@ -94,6 +102,32 @@ export class UserProfilesController {
       user.id,
       updateUserProfileDto,
     );
+  }
+
+  @UseRoles({
+    resource: Resources.USER_PROFILES,
+    action: Actions.UPDATE,
+    possession: 'own',
+  })
+  @Patch('my/status')
+  setAvailable(
+    @CurrentUser() user: User,
+    @Body() dto: UpdateAvailableUserProfileDto,
+  ) {
+    return this.userProfilesService.setAvailableByUser(
+      user.id,
+      dto.isAvailable,
+    );
+  }
+
+  @UseRoles({
+    resource: Resources.USER_PROFILES,
+    action: Actions.UPDATE,
+    possession: 'any',
+  })
+  @Patch(':id')
+  verifiedProfile(@Param('id') id: string) {
+    return this.userProfilesService.verifiedProfile(id);
   }
 
   @UseRoles({

@@ -18,6 +18,7 @@ db:
     database: "test"
     username: "devblock"
     password: "Abc123456"
+    logging: false
 
 auth:
   secret: "12345"

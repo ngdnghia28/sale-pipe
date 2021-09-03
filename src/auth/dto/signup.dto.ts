@@ -1,9 +1,9 @@
-import { IsBoolean, IsEmail, IsEnum, IsString } from 'class-validator';
+import { IsEmail, IsEnum, IsString } from 'class-validator';
 import { UserType } from 'src/users/user.entity';
 
 export class SignUpDto {
   @IsEnum(UserType)
-  type: UserType;
+  type: UserType.USER | UserType.HIRER;
 
   @IsString()
   username: string;
@@ -19,7 +19,4 @@ export class SignUpDto {
 
   @IsString()
   lastName: string;
-
-  @IsBoolean()
-  isActive?: boolean;
 }
