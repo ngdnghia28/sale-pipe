@@ -9,6 +9,7 @@ import {
   JoinColumn,
   JoinTable,
   ManyToMany,
+  ManyToOne,
   OneToOne,
 } from 'typeorm';
 
@@ -64,7 +65,7 @@ export class UserProfile extends Base {
   })
   countryId: string;
 
-  @OneToOne(() => Country, {
+  @ManyToOne(() => Country, {
     eager: true,
   })
   @JoinColumn({

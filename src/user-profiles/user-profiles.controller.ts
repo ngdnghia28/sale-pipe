@@ -22,7 +22,7 @@ import { User } from 'src/users/user.entity';
 @ApiTags('UserProfiles')
 @Controller('user-profiles')
 export class UserProfilesController {
-  constructor(private readonly userProfilesService: UserProfilesService) { }
+  constructor(private readonly userProfilesService: UserProfilesService) {}
 
   @UseRoles({
     resource: Resources.USER_PROFILES,
@@ -96,6 +96,16 @@ export class UserProfilesController {
       user.id,
       updateUserProfileDto,
     );
+  }
+
+  @UseRoles({
+    resource: Resources.USER_PROFILES,
+    action: Actions.UPDATE,
+    possession: 'any',
+  })
+  @Patch(':id')
+  verifiedProfile(@Param('id') id: string) {
+    return this.userProfilesService.verifiedProfile(id);
   }
 
   @UseRoles({

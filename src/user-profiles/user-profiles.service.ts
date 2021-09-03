@@ -11,7 +11,7 @@ export class UserProfilesService {
   constructor(
     @InjectRepository(UserProfile)
     private repo: Repository<UserProfile>,
-  ) {}
+  ) { }
 
   // because of this: https://github.com/typeorm/typeorm/issues/2200
   // we need to use find instead
@@ -52,6 +52,17 @@ export class UserProfilesService {
     const userProfile = await this.findOne(id);
     if (userProfile) {
       return this.repo.save({ ...userProfile, ...updateUserProfileDto });
+    } else {
+      throw new NotFoundException(`User profile ${id} not found`);
+    }
+  }
+
+  async verifiedProfile(id: string) {
+    const userProfile = await this.findOne(id);
+    if (userProfile) {
+      return this.repo.update(id, {
+        isVerified: true,
+      });
     } else {
       throw new NotFoundException(`User profile ${id} not found`);
     }
