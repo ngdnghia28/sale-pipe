@@ -23,6 +23,12 @@ export class UserProfile extends Base {
   @JoinColumn()
   user: User;
 
+  @Column({
+    name: 'is_verified',
+    default: false,
+  })
+  isVerified: boolean;
+
   @Column()
   phone: string;
 

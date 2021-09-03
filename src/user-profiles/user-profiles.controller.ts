@@ -22,7 +22,7 @@ import { User } from 'src/users/user.entity';
 @ApiTags('UserProfiles')
 @Controller('user-profiles')
 export class UserProfilesController {
-  constructor(private readonly userProfilesService: UserProfilesService) {}
+  constructor(private readonly userProfilesService: UserProfilesService) { }
 
   @UseRoles({
     resource: Resources.USER_PROFILES,
@@ -57,7 +57,9 @@ export class UserProfilesController {
   })
   @Get()
   findAll() {
-    return this.userProfilesService.findAll();
+    return this.userProfilesService.findAll({
+      isVerified: true,
+    });
   }
 
   @UseRoles({

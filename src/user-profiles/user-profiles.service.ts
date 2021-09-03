@@ -38,8 +38,10 @@ export class UserProfilesService {
     return this.repo.save(createUserProfileDto);
   }
 
-  findAll() {
-    return this.repo.find();
+  findAll(options?: Pick<UserProfile, 'isVerified'>) {
+    return this.repo.find({
+      where: options,
+    });
   }
 
   findOne(id: string) {

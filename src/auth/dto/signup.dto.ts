@@ -3,7 +3,7 @@ import { UserType } from 'src/users/user.entity';
 
 export class SignUpDto {
   @IsEnum(UserType)
-  type: UserType;
+  type: UserType.USER | UserType.HIRER;
 
   @IsString()
   username: string;

@@ -29,17 +29,20 @@ import { ACAuthGuard } from './auth/guards/ac-auth.guard';
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => {
         const env = process.env.NODE_ENV;
-        const conf = configService.get('db.mysql');
+        const conf =
+          env === 'test'
+            ? configService.get('db.test')
+            : configService.get('db.mysql');
         if (env === 'production') {
           return {
-            ...conf,
             entities: [__dirname + '/**/*.entity{.ts,.js}'],
+            ...conf,
           };
         } else {
           return {
-            ...conf,
             entities: [__dirname + '/**/*.entity{.ts,.js}'],
             logging: true,
+            ...conf,
           };
         }
       },
@@ -77,4 +80,4 @@ import { ACAuthGuard } from './auth/guards/ac-auth.guard';
     AppService,
   ],
 })
-export class AppModule {}
+export class AppModule { }
