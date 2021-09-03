@@ -1,4 +1,4 @@
-import { Module, ValidationPipe } from '@nestjs/common';
+import { ClassSerializerInterceptor, Module, ValidationPipe } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
@@ -12,7 +12,7 @@ import { CountriesModule } from './countries/countries.module';
 import { LanguagesModule } from './languages/languages.module';
 import { IndustriesModule } from './industries/industries.module';
 import configuration from './config/configuration';
-import { APP_GUARD, APP_PIPE } from '@nestjs/core';
+import { APP_GUARD, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { CompanyProfilesModule } from './company-profiles/company-profiles.module';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { roles } from './app.roles';
@@ -76,6 +76,11 @@ import { ACAuthGuard } from './auth/guards/ac-auth.guard';
     {
       provide: APP_GUARD,
       useClass: ACAuthGuard,
+    },
+
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: ClassSerializerInterceptor,
     },
     AppService,
   ],

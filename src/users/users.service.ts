@@ -15,7 +15,7 @@ export class UsersService {
 
   async create(dto: Partial<User>): Promise<User> {
     dto.password = await hash(dto.password, HASH_ROUND);
-    return this.usersRepository.save(dto);
+    return this.usersRepository.save(this.usersRepository.create(dto));
   }
 
   findAll(): Promise<User[]> {
