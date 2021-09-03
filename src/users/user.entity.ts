@@ -6,6 +6,7 @@ import { Column, Entity, JoinTable, ManyToMany } from 'typeorm';
 export enum UserType {
   USER = 'USER',
   HIRER = 'HIRER',
+  SYSTEM = 'SYSTEM',
 }
 @Entity('users')
 export class User extends Base {
@@ -48,7 +49,7 @@ export class User extends Base {
   lastName: string;
 
   @Column({
-    default: true,
+    default: false,
     name: 'is_active',
   })
   isActive: boolean;
