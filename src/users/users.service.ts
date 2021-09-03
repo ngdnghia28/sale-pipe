@@ -11,7 +11,7 @@ export class UsersService {
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,
-  ) { }
+  ) {}
 
   async create(dto: Partial<User>): Promise<User> {
     dto.password = await hash(dto.password, HASH_ROUND);
@@ -28,7 +28,7 @@ export class UsersService {
 
   findByEmail(email: string): Promise<User> {
     return this.usersRepository.findOneOrFail({
-      email
+      email,
     });
   }
 

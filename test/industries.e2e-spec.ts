@@ -18,11 +18,10 @@ describe('Industries (e2e)', () => {
 
   afterAll(async () => {
     await app.close();
-  })
+  });
 
   it('/industries (GET)', async () => {
-    const response = await request(app.getHttpServer())
-      .get('/industries')
+    const response = await request(app.getHttpServer()).get('/industries');
 
     expect(response.status).toBe(200);
     expect(response.body).toHaveLength(3);

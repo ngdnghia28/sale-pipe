@@ -11,7 +11,9 @@ describe('CompanyProfilesController', () => {
       providers: [CompanyProfilesService],
     }).compile();
 
-    controller = module.get<CompanyProfilesController>(CompanyProfilesController);
+    controller = module.get<CompanyProfilesController>(
+      CompanyProfilesController,
+    );
   });
 
   it('should be defined', () => {

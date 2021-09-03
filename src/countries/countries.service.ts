@@ -9,10 +9,11 @@ import { Country } from './entities/country.entity';
 export class CountriesService {
   constructor(
     @InjectRepository(Country)
-    private repo: Repository<Country>) { }
+    private repo: Repository<Country>,
+  ) {}
 
   create(createCountryDto: CreateCountryDto) {
-    return this.repo.create(createCountryDto)
+    return this.repo.create(createCountryDto);
   }
 
   findAll() {

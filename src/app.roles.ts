@@ -1,8 +1,18 @@
-import { RolesBuilder } from "nest-access-control";
-import { Resources, Roles } from "./shared/constant";
+import { RolesBuilder } from 'nest-access-control';
+import { Resources, Roles } from './shared/constant';
 
-const allResources = [Resources.COUNTRIES, Resources.LANGUAGES, Resources.INDUSTRIES, Resources.USER_PROFILES, Resources.COMPANY_PROFILES]
-const publicResources = [Resources.COUNTRIES, Resources.LANGUAGES, Resources.INDUSTRIES];
+const allResources = [
+  Resources.COUNTRIES,
+  Resources.LANGUAGES,
+  Resources.INDUSTRIES,
+  Resources.USER_PROFILES,
+  Resources.COMPANY_PROFILES,
+];
+const publicResources = [
+  Resources.COUNTRIES,
+  Resources.LANGUAGES,
+  Resources.INDUSTRIES,
+];
 
 export const roles: RolesBuilder = new RolesBuilder();
 
@@ -21,4 +31,4 @@ roles
   .createAny(publicResources)
   .updateAny(publicResources)
   .deleteAny(allResources)
-  .readAny(allResources)
+  .readAny(allResources);

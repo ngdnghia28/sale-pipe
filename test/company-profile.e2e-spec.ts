@@ -14,16 +14,18 @@ describe('Company-profiles (e2e)', () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [
         ConfigModule.forRoot({
-          load: [configuration]
+          load: [configuration],
         }),
-        AppModule],
+        AppModule,
+      ],
       providers: [
         {
           provide: 'Connection',
           useFactory: provideConnection,
-          inject: [ConfigService]
+          inject: [ConfigService],
         },
-        TestUtils]
+        TestUtils,
+      ],
     }).compile();
 
     app = moduleFixture.createNestApplication();
@@ -34,45 +36,49 @@ describe('Company-profiles (e2e)', () => {
 
   afterAll(async () => {
     await app.close();
-  })
+  });
 
   describe('Unauthentication (e2e)', () => {
     it('/company-profiles (GET)', async () => {
-      const response = await request(app.getHttpServer())
-        .get('/company-profiles')
+      const response = await request(app.getHttpServer()).get(
+        '/company-profiles',
+      );
 
       expect(response.status).toBe(401);
     });
 
     it('/company-profiles/:id (GET)', async () => {
-      const response = await request(app.getHttpServer())
-        .get('/company-profiles/123')
+      const response = await request(app.getHttpServer()).get(
+        '/company-profiles/123',
+      );
 
       expect(response.status).toBe(401);
     });
 
     it('/company-profiles (POST)', async () => {
-      const response = await request(app.getHttpServer())
-        .post('/company-profiles')
+      const response = await request(app.getHttpServer()).post(
+        '/company-profiles',
+      );
 
       expect(response.status).toBe(401);
     });
 
     it('/company-profiles/:id (PATCH)', async () => {
-      const response = await request(app.getHttpServer())
-        .patch('/company-profiles/123')
+      const response = await request(app.getHttpServer()).patch(
+        '/company-profiles/123',
+      );
 
       expect(response.status).toBe(401);
     });
 
     it('/company-profiles/:id (DELETE)', async () => {
-      const response = await request(app.getHttpServer())
-        .delete('/company-profiles/123')
+      const response = await request(app.getHttpServer()).delete(
+        '/company-profiles/123',
+      );
 
       expect(response.status).toBe(401);
     });
-
-  })
+  });
 
   describe('USER role (e2e)', () => {
     let userToken: string;
@@ -80,8 +86,8 @@ describe('Company-profiles (e2e)', () => {
       const response = await request(app.getHttpServer())
         .post('/auth/login')
         .send({
-          email: "user@gmail.com",
-          password: "password"
+          email: 'user@gmail.com',
+          password: 'password',
         });
 
       userToken = response.body.access_token;
@@ -92,7 +98,7 @@ describe('Company-profiles (e2e)', () => {
     it('/company-profiles (GET)', async () => {
       const response = await request(app.getHttpServer())
         .get('/company-profiles')
-        .set('Authorization', `Bearer ${userToken}`)
+        .set('Authorization', `Bearer ${userToken}`);
 
       expect(response.status).toBe(403);
     });
@@ -100,7 +106,7 @@ describe('Company-profiles (e2e)', () => {
     it('/company-profiles/:id (GET)', async () => {
       const response = await request(app.getHttpServer())
         .get('/company-profiles/123')
-        .set('Authorization', `Bearer ${userToken}`)
+        .set('Authorization', `Bearer ${userToken}`);
 
       expect(response.status).toBe(403);
     });
@@ -108,7 +114,7 @@ describe('Company-profiles (e2e)', () => {
     it('/company-profiles (POST)', async () => {
       const response = await request(app.getHttpServer())
         .post('/company-profiles')
-        .set('Authorization', `Bearer ${userToken}`)
+        .set('Authorization', `Bearer ${userToken}`);
 
       expect(response.status).toBe(403);
     });
@@ -116,7 +122,7 @@ describe('Company-profiles (e2e)', () => {
     it('/company-profiles/:id (PATCH)', async () => {
       const response = await request(app.getHttpServer())
         .patch('/company-profiles/123')
-        .set('Authorization', `Bearer ${userToken}`)
+        .set('Authorization', `Bearer ${userToken}`);
 
       expect(response.status).toBe(403);
     });
@@ -124,12 +130,11 @@ describe('Company-profiles (e2e)', () => {
     it('/company-profiles/:id (DELETE)', async () => {
       const response = await request(app.getHttpServer())
         .delete('/company-profiles/123')
-        .set('Authorization', `Bearer ${userToken}`)
+        .set('Authorization', `Bearer ${userToken}`);
 
       expect(response.status).toBe(403);
     });
-
-  })
+  });
 
   describe('HIRER role (e2e)', () => {
     let hirerToken: string;
@@ -137,8 +142,8 @@ describe('Company-profiles (e2e)', () => {
       const response = await request(app.getHttpServer())
         .post('/auth/login')
         .send({
-          email: "hirer@gmail.com",
-          password: "password"
+          email: 'hirer@gmail.com',
+          password: 'password',
         });
 
       hirerToken = response.body.access_token;
@@ -149,7 +154,7 @@ describe('Company-profiles (e2e)', () => {
     it('/company-profiles (GET)', async () => {
       const response = await request(app.getHttpServer())
         .get('/company-profiles')
-        .set('Authorization', `Bearer ${hirerToken}`)
+        .set('Authorization', `Bearer ${hirerToken}`);
 
       expect(response.status).toBe(403);
     });
@@ -157,7 +162,7 @@ describe('Company-profiles (e2e)', () => {
     it('/company-profiles/:id (GET)', async () => {
       const response = await request(app.getHttpServer())
         .get('/company-profiles/123')
-        .set('Authorization', `Bearer ${hirerToken}`)
+        .set('Authorization', `Bearer ${hirerToken}`);
 
       expect(response.status).toBe(403);
     });
@@ -165,7 +170,7 @@ describe('Company-profiles (e2e)', () => {
     it('/company-profiles (POST)', async () => {
       const response = await request(app.getHttpServer())
         .post('/company-profiles')
-        .set('Authorization', `Bearer ${hirerToken}`)
+        .set('Authorization', `Bearer ${hirerToken}`);
 
       expect(response.status).toBe(403);
     });
@@ -173,7 +178,7 @@ describe('Company-profiles (e2e)', () => {
     it('/company-profiles/:id (PATCH)', async () => {
       const response = await request(app.getHttpServer())
         .patch('/company-profiles/123')
-        .set('Authorization', `Bearer ${hirerToken}`)
+        .set('Authorization', `Bearer ${hirerToken}`);
 
       expect(response.status).toBe(403);
     });
@@ -181,12 +186,11 @@ describe('Company-profiles (e2e)', () => {
     it('/company-profiles/:id (DELETE)', async () => {
       const response = await request(app.getHttpServer())
         .delete('/company-profiles/123')
-        .set('Authorization', `Bearer ${hirerToken}`)
+        .set('Authorization', `Bearer ${hirerToken}`);
 
       expect(response.status).toBe(403);
     });
-
-  })
+  });
 
   describe('ADMIN role (e2e)', () => {
     let adminToken: string;
@@ -194,8 +198,8 @@ describe('Company-profiles (e2e)', () => {
       const response = await request(app.getHttpServer())
         .post('/auth/login')
         .send({
-          email: "admin@gmail.com",
-          password: "password"
+          email: 'admin@gmail.com',
+          password: 'password',
         });
 
       adminToken = response.body.access_token;
@@ -206,7 +210,7 @@ describe('Company-profiles (e2e)', () => {
     it('/company-profiles (GET)', async () => {
       const response = await request(app.getHttpServer())
         .get('/company-profiles')
-        .set('Authorization', `Bearer ${adminToken}`)
+        .set('Authorization', `Bearer ${adminToken}`);
 
       expect(response.status).toBe(200);
     });
@@ -214,7 +218,7 @@ describe('Company-profiles (e2e)', () => {
     it('/company-profiles/:id (GET)', async () => {
       const response = await request(app.getHttpServer())
         .get('/company-profiles/123')
-        .set('Authorization', `Bearer ${adminToken}`)
+        .set('Authorization', `Bearer ${adminToken}`);
 
       expect(response.status).toBe(200);
     });
@@ -222,7 +226,7 @@ describe('Company-profiles (e2e)', () => {
     it('/company-profiles (POST)', async () => {
       const response = await request(app.getHttpServer())
         .post('/company-profiles')
-        .set('Authorization', `Bearer ${adminToken}`)
+        .set('Authorization', `Bearer ${adminToken}`);
 
       expect(response.status).toBe(403);
     });
@@ -230,7 +234,7 @@ describe('Company-profiles (e2e)', () => {
     it('/company-profiles/:id (PATCH)', async () => {
       const response = await request(app.getHttpServer())
         .patch('/company-profiles/123')
-        .set('Authorization', `Bearer ${adminToken}`)
+        .set('Authorization', `Bearer ${adminToken}`);
 
       expect(response.status).toBe(403);
     });
@@ -238,11 +242,9 @@ describe('Company-profiles (e2e)', () => {
     it('/company-profiles/:id (DELETE)', async () => {
       const response = await request(app.getHttpServer())
         .delete('/company-profiles/123')
-        .set('Authorization', `Bearer ${adminToken}`)
+        .set('Authorization', `Bearer ${adminToken}`);
 
       expect(response.status).toBe(200);
     });
-
-  })
-
+  });
 });

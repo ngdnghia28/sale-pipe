@@ -9,14 +9,18 @@ import { CompanyProfile } from './entities/company-profile.entity';
 export class CompanyProfilesService {
   constructor(
     @InjectRepository(CompanyProfile)
-    private repo: Repository<CompanyProfile>) { }
+    private repo: Repository<CompanyProfile>,
+  ) {}
 
   async create(createCompanyProfileDto: CreateCompanyProfileDto) {
     const profile = await this.findByUserId(createCompanyProfileDto.userId);
     if (profile) {
-      throw new HttpException(`Profile already exist for ${createCompanyProfileDto.userId}`, 400)
+      throw new HttpException(
+        `Profile already exist for ${createCompanyProfileDto.userId}`,
+        400,
+      );
     } else {
-      return this.repo.save(createCompanyProfileDto)
+      return this.repo.save(createCompanyProfileDto);
     }
   }
 
@@ -31,8 +35,8 @@ export class CompanyProfilesService {
   async findByUserId(userId: string) {
     const profiles = await this.repo.find({
       where: {
-        userId
-      }
+        userId,
+      },
     });
 
     return profiles ? profiles[0] : null;
@@ -42,7 +46,10 @@ export class CompanyProfilesService {
     return this.repo.update(id, updateCompanyProfileDto);
   }
 
-  async updateByUserId(userId: string, updateCompanyProfileDto: UpdateCompanyProfileDto) {
+  async updateByUserId(
+    userId: string,
+    updateCompanyProfileDto: UpdateCompanyProfileDto,
+  ) {
     const profile = await this.findByUserId(userId);
     if (profile) {
       return this.repo.update(profile.id, updateCompanyProfileDto);

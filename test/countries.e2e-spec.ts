@@ -18,11 +18,10 @@ describe('Countries (e2e)', () => {
 
   afterAll(async () => {
     await app.close();
-  })
+  });
 
   it('/countries (GET)', async () => {
-    const response = await request(app.getHttpServer())
-      .get('/countries')
+    const response = await request(app.getHttpServer()).get('/countries');
 
     expect(response.status).toBe(200);
     expect(response.body).toHaveLength(4);

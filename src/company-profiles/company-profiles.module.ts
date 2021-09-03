@@ -7,6 +7,6 @@ import { CompanyProfile } from './entities/company-profile.entity';
 @Module({
   imports: [TypeOrmModule.forFeature([CompanyProfile])],
   controllers: [CompanyProfilesController],
-  providers: [CompanyProfilesService]
+  providers: [CompanyProfilesService],
 })
-export class CompanyProfilesModule { }
+export class CompanyProfilesModule {}

@@ -10,28 +10,32 @@ import { UserProfile } from './entities/user-profile.entity';
 export class UserProfilesService {
   constructor(
     @InjectRepository(UserProfile)
-    private repo: Repository<UserProfile>) { }
+    private repo: Repository<UserProfile>,
+  ) {}
 
   // because of this: https://github.com/typeorm/typeorm/issues/2200
   // we need to use find instead
   async findByUserId(id: string) {
     const profiles = await this.repo.find({
       where: {
-        userId: id
-      }
-    })
+        userId: id,
+      },
+    });
 
-    return profiles ? profiles[0] : null
+    return profiles ? profiles[0] : null;
   }
 
   async create(createUserProfileDto: CreateUserProfileDto) {
     const profile = await this.findByUserId(createUserProfileDto.userId);
 
     if (profile) {
-      throw new HttpException(`Profile already exist for ${createUserProfileDto.userId}`, 400)
+      throw new HttpException(
+        `Profile already exist for ${createUserProfileDto.userId}`,
+        400,
+      );
     }
 
-    return this.repo.save(createUserProfileDto)
+    return this.repo.save(createUserProfileDto);
   }
 
   findAll() {
@@ -47,16 +51,19 @@ export class UserProfilesService {
     if (userProfile) {
       return this.repo.save({ ...userProfile, ...updateUserProfileDto });
     } else {
-      throw new NotFoundException(`User profile ${id} not found`)
+      throw new NotFoundException(`User profile ${id} not found`);
     }
   }
 
-  async updateByUserId(userId: string, updateUserProfileDto: UpdateUserProfileDto) {
+  async updateByUserId(
+    userId: string,
+    updateUserProfileDto: UpdateUserProfileDto,
+  ) {
     const userProfile = await this.findByUserId(userId);
     if (userProfile) {
       return this.repo.save({ ...userProfile, ...updateUserProfileDto });
     } else {
-      throw new NotFoundException(`User profile for user ${userId} not found`)
+      throw new NotFoundException(`User profile for user ${userId} not found`);
     }
   }
 

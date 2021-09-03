@@ -1,6 +1,17 @@
-import { OmitType } from "@nestjs/swagger";
-import { Type } from "class-transformer";
-import { IsDefined, IsEmail, IsInt, IsNumberString, IsOptional, IsPhoneNumber, IsString, IsUrl, IsUUID, ValidateNested } from "class-validator";
+import { OmitType } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
+import {
+  IsDefined,
+  IsEmail,
+  IsInt,
+  IsNumberString,
+  IsOptional,
+  IsPhoneNumber,
+  IsString,
+  IsUrl,
+  IsUUID,
+  ValidateNested,
+} from 'class-validator';
 
 export class Id {
   @IsUUID()
@@ -50,4 +61,6 @@ export class CreateUserProfileDto {
   industries: Id[];
 }
 
-export class CreateMyUserProfileDto extends OmitType(CreateUserProfileDto, ['userId']) { }
+export class CreateMyUserProfileDto extends OmitType(CreateUserProfileDto, [
+  'userId',
+]) {}

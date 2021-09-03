@@ -39,7 +39,7 @@ import { ACAuthGuard } from './auth/guards/ac-auth.guard';
           return {
             ...conf,
             entities: [__dirname + '/**/*.entity{.ts,.js}'],
-            logging: true
+            logging: true,
           };
         }
       },
@@ -74,6 +74,7 @@ import { ACAuthGuard } from './auth/guards/ac-auth.guard';
       provide: APP_GUARD,
       useClass: ACAuthGuard,
     },
-    AppService],
+    AppService,
+  ],
 })
-export class AppModule { }
+export class AppModule {}

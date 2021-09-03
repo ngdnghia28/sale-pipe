@@ -9,14 +9,15 @@ import { Language } from './entities/language.entity';
 export class LanguagesService {
   constructor(
     @InjectRepository(Language)
-    private repo: Repository<Language>) { }
+    private repo: Repository<Language>,
+  ) {}
 
   create(createLanguageDto: CreateLanguageDto) {
-    return this.repo.create(createLanguageDto)
+    return this.repo.create(createLanguageDto);
   }
 
   findAll() {
-    return this.repo.find()
+    return this.repo.find();
   }
 
   findOne(id: string) {

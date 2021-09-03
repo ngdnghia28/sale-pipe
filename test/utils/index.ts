@@ -5,12 +5,7 @@ import * as fs from 'fs';
 import * as Path from 'path';
 import { Connection, ConnectionManager } from 'typeorm';
 
-const ignoreEntities = [
-  'countries',
-  'languages',
-  'industries',
-  'roles'
-]
+const ignoreEntities = ['countries', 'languages', 'industries', 'roles'];
 
 @Injectable()
 export class TestUtils {
@@ -20,19 +15,18 @@ export class TestUtils {
     }
   }
 
-
   public async closeDbConnection() {
     if (this.connection.isConnected) {
-      await (this.connection).close();
+      await this.connection.close();
     }
   }
 
   public async getEntities() {
     const entities: any = [];
-    this.connection.entityMetadatas.forEach(
-      (x) => entities.push({ name: x.name, tableName: x.tableName }),
+    this.connection.entityMetadatas.forEach((x) =>
+      entities.push({ name: x.name, tableName: x.tableName }),
     );
-    return entities.filter(v => !ignoreEntities.includes(v.tableName));
+    return entities.filter((v) => !ignoreEntities.includes(v.tableName));
   }
   public async reloadFixtures() {
     try {
@@ -45,7 +39,7 @@ export class TestUtils {
   }
   public async cleanAll(entities: any) {
     try {
-      await this.connection.query('SET FOREIGN_KEY_CHECKS = 0')
+      await this.connection.query('SET FOREIGN_KEY_CHECKS = 0');
       for (const entity of entities) {
         try {
           const repository = await this.connection.getRepository(entity.name);
@@ -60,7 +54,7 @@ export class TestUtils {
       console.log(error);
       throw new Error(`ERROR: Cleaning test db: ${error}`);
     } finally {
-      await this.connection.query('SET FOREIGN_KEY_CHECKS = 1')
+      await this.connection.query('SET FOREIGN_KEY_CHECKS = 1');
     }
   }
 
@@ -68,7 +62,10 @@ export class TestUtils {
     try {
       for (const entity of entities) {
         const repository = await this.connection.getRepository(entity.name);
-        const fixtureFile = Path.join(__dirname, `../fixtures/entity/${entity.tableName}.json`);
+        const fixtureFile = Path.join(
+          __dirname,
+          `../fixtures/entity/${entity.tableName}.json`,
+        );
         if (fs.existsSync(fixtureFile)) {
           const items = JSON.parse(fs.readFileSync(fixtureFile, 'utf8'));
           await repository
@@ -79,7 +76,9 @@ export class TestUtils {
         }
       }
     } catch (error) {
-      throw new Error(`ERROR [TestUtils.loadAll()]: Loading fixtures on test db: ${error}`);
+      throw new Error(
+        `ERROR [TestUtils.loadAll()]: Loading fixtures on test db: ${error}`,
+      );
     }
   }
 }
@@ -88,7 +87,7 @@ export async function provideConnection(configService: ConfigService) {
   const cm = new ConnectionManager();
   const connection = cm.create({
     ...configService.get('db.test'),
-    entities: [__dirname + '/../../**/*.entity.js']
+    entities: [__dirname + '/../../**/*.entity.js'],
   });
   await connection.connect();
   return connection;

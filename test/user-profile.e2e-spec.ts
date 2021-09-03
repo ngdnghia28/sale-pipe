@@ -14,16 +14,18 @@ describe('User-profiles (e2e)', () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [
         ConfigModule.forRoot({
-          load: [configuration]
+          load: [configuration],
         }),
-        AppModule],
+        AppModule,
+      ],
       providers: [
         {
           provide: 'Connection',
           useFactory: provideConnection,
-          inject: [ConfigService]
+          inject: [ConfigService],
         },
-        TestUtils]
+        TestUtils,
+      ],
     }).compile();
 
     app = moduleFixture.createNestApplication();
@@ -34,45 +36,47 @@ describe('User-profiles (e2e)', () => {
 
   afterAll(async () => {
     await app.close();
-  })
+  });
 
   describe('Unauthentication (e2e)', () => {
     it('/user-profiles (GET)', async () => {
-      const response = await request(app.getHttpServer())
-        .get('/user-profiles')
+      const response = await request(app.getHttpServer()).get('/user-profiles');
 
       expect(response.status).toBe(401);
     });
 
     it('/user-profiles/:id (GET)', async () => {
-      const response = await request(app.getHttpServer())
-        .get('/user-profiles/123')
+      const response = await request(app.getHttpServer()).get(
+        '/user-profiles/123',
+      );
 
       expect(response.status).toBe(401);
     });
 
     it('/user-profiles (POST)', async () => {
-      const response = await request(app.getHttpServer())
-        .post('/user-profiles')
+      const response = await request(app.getHttpServer()).post(
+        '/user-profiles',
+      );
 
       expect(response.status).toBe(401);
     });
 
     it('/user-profiles/:id (PATCH)', async () => {
-      const response = await request(app.getHttpServer())
-        .patch('/user-profiles/123')
+      const response = await request(app.getHttpServer()).patch(
+        '/user-profiles/123',
+      );
 
       expect(response.status).toBe(401);
     });
 
     it('/user-profiles/:id (DELETE)', async () => {
-      const response = await request(app.getHttpServer())
-        .delete('/user-profiles/123')
+      const response = await request(app.getHttpServer()).delete(
+        '/user-profiles/123',
+      );
 
       expect(response.status).toBe(401);
     });
-
-  })
+  });
 
   describe('USER role (e2e)', () => {
     let userToken: string;
@@ -80,8 +84,8 @@ describe('User-profiles (e2e)', () => {
       const response = await request(app.getHttpServer())
         .post('/auth/login')
         .send({
-          email: "user@gmail.com",
-          password: "password"
+          email: 'user@gmail.com',
+          password: 'password',
         });
 
       userToken = response.body.access_token;
@@ -92,7 +96,7 @@ describe('User-profiles (e2e)', () => {
     it('/user-profiles (GET)', async () => {
       const response = await request(app.getHttpServer())
         .get('/user-profiles')
-        .set('Authorization', `Bearer ${userToken}`)
+        .set('Authorization', `Bearer ${userToken}`);
 
       expect(response.status).toBe(403);
     });
@@ -100,7 +104,7 @@ describe('User-profiles (e2e)', () => {
     it('/user-profiles/:id (GET)', async () => {
       const response = await request(app.getHttpServer())
         .get('/user-profiles/123')
-        .set('Authorization', `Bearer ${userToken}`)
+        .set('Authorization', `Bearer ${userToken}`);
 
       expect(response.status).toBe(403);
     });
@@ -108,7 +112,7 @@ describe('User-profiles (e2e)', () => {
     it('/user-profiles (POST)', async () => {
       const response = await request(app.getHttpServer())
         .post('/user-profiles')
-        .set('Authorization', `Bearer ${userToken}`)
+        .set('Authorization', `Bearer ${userToken}`);
 
       expect(response.status).toBe(403);
     });
@@ -116,7 +120,7 @@ describe('User-profiles (e2e)', () => {
     it('/user-profiles/:id (PATCH)', async () => {
       const response = await request(app.getHttpServer())
         .patch('/user-profiles/123')
-        .set('Authorization', `Bearer ${userToken}`)
+        .set('Authorization', `Bearer ${userToken}`);
 
       expect(response.status).toBe(403);
     });
@@ -124,12 +128,11 @@ describe('User-profiles (e2e)', () => {
     it('/user-profiles/:id (DELETE)', async () => {
       const response = await request(app.getHttpServer())
         .delete('/user-profiles/123')
-        .set('Authorization', `Bearer ${userToken}`)
+        .set('Authorization', `Bearer ${userToken}`);
 
       expect(response.status).toBe(403);
     });
-
-  })
+  });
 
   describe('HIRER role (e2e)', () => {
     let hirerToken: string;
@@ -137,8 +140,8 @@ describe('User-profiles (e2e)', () => {
       const response = await request(app.getHttpServer())
         .post('/auth/login')
         .send({
-          email: "hirer@gmail.com",
-          password: "password"
+          email: 'hirer@gmail.com',
+          password: 'password',
         });
 
       hirerToken = response.body.access_token;
@@ -149,7 +152,7 @@ describe('User-profiles (e2e)', () => {
     it('/user-profiles (GET)', async () => {
       const response = await request(app.getHttpServer())
         .get('/user-profiles')
-        .set('Authorization', `Bearer ${hirerToken}`)
+        .set('Authorization', `Bearer ${hirerToken}`);
 
       expect(response.status).toBe(200);
     });
@@ -157,7 +160,7 @@ describe('User-profiles (e2e)', () => {
     it('/user-profiles/:id (GET)', async () => {
       const response = await request(app.getHttpServer())
         .get('/user-profiles/123')
-        .set('Authorization', `Bearer ${hirerToken}`)
+        .set('Authorization', `Bearer ${hirerToken}`);
 
       expect(response.status).toBe(200);
     });
@@ -165,7 +168,7 @@ describe('User-profiles (e2e)', () => {
     it('/user-profiles (POST)', async () => {
       const response = await request(app.getHttpServer())
         .post('/user-profiles')
-        .set('Authorization', `Bearer ${hirerToken}`)
+        .set('Authorization', `Bearer ${hirerToken}`);
 
       expect(response.status).toBe(403);
     });
@@ -173,7 +176,7 @@ describe('User-profiles (e2e)', () => {
     it('/user-profiles/:id (PATCH)', async () => {
       const response = await request(app.getHttpServer())
         .patch('/user-profiles/123')
-        .set('Authorization', `Bearer ${hirerToken}`)
+        .set('Authorization', `Bearer ${hirerToken}`);
 
       expect(response.status).toBe(403);
     });
@@ -181,12 +184,11 @@ describe('User-profiles (e2e)', () => {
     it('/user-profiles/:id (DELETE)', async () => {
       const response = await request(app.getHttpServer())
         .delete('/user-profiles/123')
-        .set('Authorization', `Bearer ${hirerToken}`)
+        .set('Authorization', `Bearer ${hirerToken}`);
 
       expect(response.status).toBe(403);
     });
-
-  })
+  });
 
   describe('ADMIN role (e2e)', () => {
     let adminToken: string;
@@ -194,8 +196,8 @@ describe('User-profiles (e2e)', () => {
       const response = await request(app.getHttpServer())
         .post('/auth/login')
         .send({
-          email: "admin@gmail.com",
-          password: "password"
+          email: 'admin@gmail.com',
+          password: 'password',
         });
 
       adminToken = response.body.access_token;
@@ -206,7 +208,7 @@ describe('User-profiles (e2e)', () => {
     it('/user-profiles (GET)', async () => {
       const response = await request(app.getHttpServer())
         .get('/user-profiles')
-        .set('Authorization', `Bearer ${adminToken}`)
+        .set('Authorization', `Bearer ${adminToken}`);
 
       expect(response.status).toBe(200);
     });
@@ -214,7 +216,7 @@ describe('User-profiles (e2e)', () => {
     it('/user-profiles/:id (GET)', async () => {
       const response = await request(app.getHttpServer())
         .get('/user-profiles/123')
-        .set('Authorization', `Bearer ${adminToken}`)
+        .set('Authorization', `Bearer ${adminToken}`);
 
       expect(response.status).toBe(200);
     });
@@ -222,7 +224,7 @@ describe('User-profiles (e2e)', () => {
     it('/user-profiles (POST)', async () => {
       const response = await request(app.getHttpServer())
         .post('/user-profiles')
-        .set('Authorization', `Bearer ${adminToken}`)
+        .set('Authorization', `Bearer ${adminToken}`);
 
       expect(response.status).toBe(403);
     });
@@ -230,7 +232,7 @@ describe('User-profiles (e2e)', () => {
     it('/user-profiles/:id (PATCH)', async () => {
       const response = await request(app.getHttpServer())
         .patch('/user-profiles/123')
-        .set('Authorization', `Bearer ${adminToken}`)
+        .set('Authorization', `Bearer ${adminToken}`);
 
       expect(response.status).toBe(403);
     });
@@ -238,11 +240,9 @@ describe('User-profiles (e2e)', () => {
     it('/user-profiles/:id (DELETE)', async () => {
       const response = await request(app.getHttpServer())
         .delete('/user-profiles/123')
-        .set('Authorization', `Bearer ${adminToken}`)
+        .set('Authorization', `Bearer ${adminToken}`);
 
       expect(response.status).toBe(200);
     });
-
-  })
-
+  });
 });

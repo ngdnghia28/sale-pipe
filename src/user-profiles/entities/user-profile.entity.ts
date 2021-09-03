@@ -1,14 +1,21 @@
-import { Base } from "src/core/base.entity";
-import { Country } from "src/countries/entities/country.entity";
-import { Industry } from "src/industries/entities/industry.entity";
-import { Language } from "src/languages/entities/language.entity";
-import { User } from "src/users/user.entity";
-import { Column, Entity, JoinColumn, JoinTable, ManyToMany, OneToOne } from "typeorm";
+import { Base } from 'src/core/base.entity';
+import { Country } from 'src/countries/entities/country.entity';
+import { Industry } from 'src/industries/entities/industry.entity';
+import { Language } from 'src/languages/entities/language.entity';
+import { User } from 'src/users/user.entity';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  JoinTable,
+  ManyToMany,
+  OneToOne,
+} from 'typeorm';
 
 @Entity('user_profiles')
 export class UserProfile extends Base {
   @Column({
-    name: "user_id"
+    name: 'user_id',
   })
   userId: string;
 
@@ -23,7 +30,7 @@ export class UserProfile extends Base {
   email: string;
 
   @Column({
-    nullable: true
+    nullable: true,
   })
   linked_in?: string;
 
@@ -34,7 +41,7 @@ export class UserProfile extends Base {
   hours_per_week: number;
 
   @Column({
-    nullable: true
+    nullable: true,
   })
   avatar?: string;
 
@@ -42,28 +49,28 @@ export class UserProfile extends Base {
   headline: string;
 
   @Column({
-    length: 1023
+    length: 1023,
   })
   bio: string;
 
   @Column({
-    name: "country_id"
+    name: 'country_id',
   })
   countryId: string;
 
   @OneToOne(() => Country, {
-    eager: true
+    eager: true,
   })
   @JoinColumn({
-    name: "country_id"
+    name: 'country_id',
   })
   country: Country;
 
   @ManyToMany(() => Language, {
-    eager: true
+    eager: true,
   })
   @JoinTable({
-    name: "user_profiles_languages"
+    name: 'user_profiles_languages',
   })
   languages: Language[];
 
@@ -71,27 +78,26 @@ export class UserProfile extends Base {
   yose: number;
 
   @ManyToMany(() => Industry, {
-    eager: true
+    eager: true,
   })
   @JoinTable({
-    name: "user_profiles_industries"
+    name: 'user_profiles_industries',
   })
   industries: Industry[];
 
   @Column({
-    nullable: true
+    nullable: true,
   })
   sale_channel?: string;
 
   @Column({
-    nullable: true
+    nullable: true,
   })
   sale_skill?: string;
 
   @Column({
     nullable: true,
-    length: 1023
+    length: 1023,
   })
   work_history?: string;
-
 }

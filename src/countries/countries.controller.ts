@@ -1,16 +1,23 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Public } from 'src/auth/decorators/public.decorator';
 import { CountriesService } from './countries.service';
 import { CreateCountryDto } from './dto/create-country.dto';
 import { UpdateCountryDto } from './dto/update-country.dto';
 
-
 @ApiTags('Countries')
 @Public()
 @Controller('countries')
 export class CountriesController {
-  constructor(private readonly countriesService: CountriesService) { }
+  constructor(private readonly countriesService: CountriesService) {}
 
   @Post()
   create(@Body() createCountryDto: CreateCountryDto) {

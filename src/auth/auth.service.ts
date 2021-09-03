@@ -10,13 +10,12 @@ import { User } from 'src/users/user.entity';
 export class AuthService {
   constructor(
     @Inject(UsersService) private readonly usersService: UsersService,
-    @Inject(JwtService) private jwtService: JwtService
-  ) { }
+    @Inject(JwtService) private jwtService: JwtService,
+  ) {}
 
   signup(dto: SignUpDto) {
     return this.usersService.create(dto);
   }
-
 
   async login(dto: LoginDto) {
     const user = await this.usersService.findByEmail(dto.email);
@@ -25,7 +24,11 @@ export class AuthService {
   }
 
   async sign(user: User) {
-    const payload = { email: user.username, sub: user.id, roles: (user?.roles || []).map(r => r.code) };
+    const payload = {
+      email: user.username,
+      sub: user.id,
+      roles: (user?.roles || []).map((r) => r.code),
+    };
     return {
       access_token: this.jwtService.sign(payload),
     };

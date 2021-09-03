@@ -5,7 +5,7 @@ import { IS_PUBLIC_KEY } from '../decorators/public.decorator';
 
 @Injectable()
 export class ACAuthGuard extends ACGuard {
-  private readonly reflector2: Reflector
+  private readonly reflector2: Reflector;
   constructor(reflector: Reflector, roleBuilder: RolesBuilder) {
     super(reflector, roleBuilder);
     this.reflector2 = reflector;

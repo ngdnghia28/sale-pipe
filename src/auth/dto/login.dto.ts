@@ -1,5 +1,4 @@
-import { IsBoolean, IsEmail, IsEnum, IsString } from "class-validator";
-import { UserType } from "src/users/user.entity";
+import { IsEmail, IsString } from 'class-validator';
 
 export class LoginDto {
   @IsEmail()

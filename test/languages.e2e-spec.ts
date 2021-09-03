@@ -18,11 +18,10 @@ describe('Languages (e2e)', () => {
 
   afterAll(async () => {
     await app.close();
-  })
+  });
 
   it('/languages (GET)', async () => {
-    const response = await request(app.getHttpServer())
-      .get('/languages')
+    const response = await request(app.getHttpServer()).get('/languages');
 
     expect(response.status).toBe(200);
     expect(response.body).toHaveLength(3);

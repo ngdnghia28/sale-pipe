@@ -1,10 +1,17 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { IndustriesService } from './industries.service';
 import { CreateIndustryDto } from './dto/create-industry.dto';
 import { UpdateIndustryDto } from './dto/update-industry.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { Public } from 'src/auth/decorators/public.decorator';
-
 
 @ApiTags('Industries')
 @Public()
@@ -28,7 +35,10 @@ export class IndustriesController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateIndustryDto: UpdateIndustryDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateIndustryDto: UpdateIndustryDto,
+  ) {
     return this.industriesService.update(id, updateIndustryDto);
   }
 

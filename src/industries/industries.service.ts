@@ -9,10 +9,11 @@ import { Industry } from './entities/industry.entity';
 export class IndustriesService {
   constructor(
     @InjectRepository(Industry)
-    private repo: Repository<Industry>) { }
+    private repo: Repository<Industry>,
+  ) {}
 
   create(createIndustryDto: CreateIndustryDto) {
-    return this.repo.create(createIndustryDto)
+    return this.repo.create(createIndustryDto);
   }
 
   findAll() {
