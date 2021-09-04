@@ -1,5 +1,6 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { createMysqlQuery, FindQuery } from 'src/shared/paging';
 import { Repository } from 'typeorm';
 import { CreateCompanyProfileDto } from './dto/create-company-profile.dto';
 import { UpdateCompanyProfileDto } from './dto/update-company-profile.dto';
@@ -24,8 +25,8 @@ export class CompanyProfilesService {
     }
   }
 
-  findAll() {
-    return this.repo.find();
+  findAll(query: FindQuery<null>) {
+    return this.repo.find(createMysqlQuery(query));
   }
 
   findOne(id: string) {

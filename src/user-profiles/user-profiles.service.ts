@@ -1,6 +1,7 @@
 import { HttpException } from '@nestjs/common';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { createMysqlQuery, FindQuery } from 'src/shared/paging';
 import { Repository } from 'typeorm';
 import { CreateUserProfileDto } from './dto/create-user-profile.dto';
 import { UpdateUserProfileDto } from './dto/update-user-profile.dto';
@@ -38,10 +39,8 @@ export class UserProfilesService {
     return this.repo.save(createUserProfileDto);
   }
 
-  findAll(options?: Pick<UserProfile, 'isVerified' | 'isAvailable'>) {
-    return this.repo.find({
-      where: options,
-    });
+  findAll(query: FindQuery<Pick<UserProfile, 'isVerified' | 'isAvailable'>>) {
+    return this.repo.find(createMysqlQuery(query));
   }
 
   findOne(id: string) {

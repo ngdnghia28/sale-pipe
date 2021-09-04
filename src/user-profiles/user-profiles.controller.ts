@@ -1,30 +1,38 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
   SerializeOptions,
 } from '@nestjs/common';
-import { UserProfilesService } from './user-profiles.service';
+import { ApiTags } from '@nestjs/swagger';
+import { UseRoles } from 'nest-access-control';
+import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
+import { Actions, Resources } from 'src/shared/constant';
+import {
+  ApiPageResponse,
+  createPageResponse,
+  PageQuery,
+  PageResponse,
+} from 'src/shared/paging';
+import { User } from 'src/users/user.entity';
 import {
   CreateMyUserProfileDto,
   CreateUserProfileDto,
 } from './dto/create-user-profile.dto';
-import { UpdateUserProfileDto } from './dto/update-user-profile.dto';
-import { ApiTags } from '@nestjs/swagger';
-import { UseRoles } from 'nest-access-control';
-import { Actions, Resources } from 'src/shared/constant';
-import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
-import { User } from 'src/users/user.entity';
 import { UpdateAvailableUserProfileDto } from './dto/update-available-profile.dto';
+import { UpdateUserProfileDto } from './dto/update-user-profile.dto';
+import { UserProfile } from './entities/user-profile.entity';
+import { UserProfilesService } from './user-profiles.service';
 
 @ApiTags('UserProfiles')
 @Controller('user-profiles')
 export class UserProfilesController {
-  constructor(private readonly userProfilesService: UserProfilesService) { }
+  constructor(private readonly userProfilesService: UserProfilesService) {}
 
   @UseRoles({
     resource: Resources.USER_PROFILES,
@@ -52,17 +60,23 @@ export class UserProfilesController {
     });
   }
 
+  @ApiPageResponse(UserProfile)
   @UseRoles({
     resource: Resources.USER_PROFILES,
     action: Actions.READ,
     possession: 'any',
   })
   @Get()
-  findAll() {
-    return this.userProfilesService.findAll({
-      isVerified: true,
-      isAvailable: true,
+  async findAll(@Query() query: PageQuery): Promise<PageResponse<UserProfile>> {
+    const result = await this.userProfilesService.findAll({
+      ...query,
+      where: {
+        isVerified: true,
+        isAvailable: true,
+      },
     });
+
+    return createPageResponse(query, result);
   }
 
   @SerializeOptions({

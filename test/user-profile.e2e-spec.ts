@@ -342,7 +342,7 @@ describe('User-profiles (e2e)', () => {
         .set('Authorization', `Bearer ${hirerToken}`);
 
       expect(response.status).toBe(200);
-      const profiles = response.body;
+      const profiles = response.body.data;
       expect(profiles).toStrictEqual([]);
     });
 
@@ -404,7 +404,7 @@ describe('User-profiles (e2e)', () => {
         .set('Authorization', `Bearer ${hirerToken}`);
 
       expect(response.status).toBe(200);
-      const profiles = response.body;
+      const profiles = response.body.data;
       expect(profiles.length).toBe(1);
     });
 
@@ -414,7 +414,7 @@ describe('User-profiles (e2e)', () => {
         .set('Authorization', `Bearer ${hirerToken}`);
 
       expect(response.status).toBe(200);
-      const profile: UserProfile = response.body[0];
+      const profile: UserProfile = response.body.data[0];
       expect(profile).toBeDefined();
       expect(profile.email).toBeUndefined();
       expect(profile.phone).toBeUndefined();
