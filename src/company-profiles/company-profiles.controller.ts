@@ -3,6 +3,8 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
+  HttpStatus,
   Param,
   Patch,
   Post,
@@ -97,6 +99,7 @@ export class CompanyProfilesController {
     return this.companyProfilesService.findOne(id);
   }
 
+  @HttpCode(HttpStatus.NO_CONTENT)
   @UseRoles({
     resource: Resources.COMPANY_PROFILES,
     action: Actions.UPDATE,
@@ -113,6 +116,7 @@ export class CompanyProfilesController {
     );
   }
 
+  @HttpCode(HttpStatus.NO_CONTENT)
   @UseRoles({
     resource: Resources.COMPANY_PROFILES,
     action: Actions.UPDATE,
@@ -131,6 +135,7 @@ export class CompanyProfilesController {
     action: Actions.DELETE,
     possession: 'any',
   })
+  @HttpCode(HttpStatus.NO_CONTENT)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.companyProfilesService.remove(id);

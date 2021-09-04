@@ -246,7 +246,7 @@ describe('User-profiles (e2e)', () => {
           .delete('/user-profiles/123')
           .set('Authorization', `Bearer ${adminToken}`);
 
-        expect(response.status).toBe(200);
+        expect(response.status).toBe(204);
       });
     });
   });
@@ -397,7 +397,7 @@ describe('User-profiles (e2e)', () => {
         .patch(`/user-profiles/${response.body.id}`)
         .set('Authorization', `Bearer ${adminToken}`);
 
-      expect(response.status).toBe(200);
+      expect(response.status).toBe(204);
 
       response = await request(app.getHttpServer())
         .get('/user-profiles')
@@ -472,7 +472,7 @@ describe('User-profiles (e2e)', () => {
           isAvailable: false,
         });
 
-      expect(response.status).toBe(200);
+      expect(response.status).toBe(204);
 
       response = await request(app.getHttpServer())
         .get('/user-profiles/my')
@@ -487,7 +487,7 @@ describe('User-profiles (e2e)', () => {
         .send({
           isAvailable: true,
         });
-      expect(response.status).toBe(200);
+      expect(response.status).toBe(204);
 
       response = await request(app.getHttpServer())
         .get('/user-profiles/my')

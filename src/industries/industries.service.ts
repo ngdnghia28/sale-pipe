@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { EntityNotFoundError, Repository } from 'typeorm';
 import { CreateIndustryDto } from './dto/create-industry.dto';
 import { UpdateIndustryDto } from './dto/update-industry.dto';
 import { Industry } from './entities/industry.entity';
@@ -13,7 +13,7 @@ export class IndustriesService {
   ) {}
 
   create(createIndustryDto: CreateIndustryDto) {
-    return this.repo.create(createIndustryDto);
+    return this.repo.save(this.repo.create(createIndustryDto));
   }
 
   findAll() {
@@ -24,11 +24,17 @@ export class IndustriesService {
     return this.repo.findOne(id);
   }
 
-  update(id: string, updateIndustryDto: UpdateIndustryDto) {
-    return this.repo.update(id, updateIndustryDto);
+  async update(id: string, updateIndustryDto: UpdateIndustryDto) {
+    const result = await this.repo.update(id, updateIndustryDto);
+    if (!result || !result.affected) {
+      throw new EntityNotFoundError(Industry, id);
+    }
   }
 
-  remove(id: string) {
-    return this.repo.delete(id);
+  async remove(id: string) {
+    const result = await this.repo.delete(id);
+    if (!result || !result.affected) {
+      throw new EntityNotFoundError(Industry, id);
+    }
   }
 }
