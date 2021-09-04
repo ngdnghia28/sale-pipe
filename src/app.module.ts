@@ -24,6 +24,8 @@ import { LanguagesModule } from './languages/languages.module';
 import { SharedModule } from './shared/shared.module';
 import { UserProfilesModule } from './user-profiles/user-profiles.module';
 import { UsersModule } from './users/users.module';
+import { ContractsModule } from './contracts/contracts.module';
+import { ContractTermsModule } from './contract-terms/contract-terms.module';
 
 @Module({
   imports: [
@@ -66,6 +68,8 @@ import { UsersModule } from './users/users.module';
     LanguagesModule,
     IndustriesModule,
     CompanyProfilesModule,
+    ContractsModule,
+    ContractTermsModule,
   ],
   controllers: [AppController],
   providers: [
