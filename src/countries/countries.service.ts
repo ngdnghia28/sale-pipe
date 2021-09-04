@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { EntityNotFoundError, Repository } from 'typeorm';
 import { CreateCountryDto } from './dto/create-country.dto';
 import { UpdateCountryDto } from './dto/update-country.dto';
 import { Country } from './entities/country.entity';
@@ -10,10 +10,10 @@ export class CountriesService {
   constructor(
     @InjectRepository(Country)
     private repo: Repository<Country>,
-  ) {}
+  ) { }
 
   create(createCountryDto: CreateCountryDto) {
-    return this.repo.create(createCountryDto);
+    return this.repo.save(this.repo.create(createCountryDto));
   }
 
   findAll() {
@@ -24,11 +24,17 @@ export class CountriesService {
     return this.repo.findOne(id);
   }
 
-  update(id: string, updateCountryDto: UpdateCountryDto) {
-    return this.repo.update(id, updateCountryDto);
+  async update(id: string, updateCountryDto: UpdateCountryDto) {
+    const result = await this.repo.update(id, updateCountryDto);
+    if (!result || !result.affected) {
+      throw new EntityNotFoundError(Country, id);
+    }
   }
 
-  remove(id: string) {
-    return this.repo.delete(id);
+  async remove(id: string) {
+    const result = await this.repo.delete(id);
+    if (!result || !result.affected) {
+      throw new EntityNotFoundError(Country, id);
+    }
   }
 }

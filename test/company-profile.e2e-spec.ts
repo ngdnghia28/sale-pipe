@@ -244,7 +244,7 @@ describe('Company-profiles (e2e)', () => {
         .delete('/company-profiles/123')
         .set('Authorization', `Bearer ${adminToken}`);
 
-      expect(response.status).toBe(200);
+      expect(response.status).toBe(204);
     });
   });
 });

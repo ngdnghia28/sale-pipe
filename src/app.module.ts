@@ -4,7 +4,7 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { APP_GUARD, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
+import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AccessControlModule } from 'nest-access-control';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
@@ -17,6 +17,7 @@ import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { CompanyProfilesModule } from './company-profiles/company-profiles.module';
 import configuration from './config/configuration';
 import { CoreModule } from './core/core.module';
+import { TypeormExceptionFilter } from './core/filters/typeorm-exception.filter';
 import { CountriesModule } from './countries/countries.module';
 import { IndustriesModule } from './industries/industries.module';
 import { LanguagesModule } from './languages/languages.module';
@@ -76,6 +77,8 @@ import { UsersModule } from './users/users.module';
         transform: true,
       }),
     },
+
+    // Guards
     {
       provide: APP_GUARD,
       useClass: JwtAuthGuard,
@@ -85,6 +88,13 @@ import { UsersModule } from './users/users.module';
       useClass: ACAuthGuard,
     },
 
+    // Filters
+    {
+      provide: APP_FILTER,
+      useClass: TypeormExceptionFilter,
+    },
+
+    // Interceptors
     {
       provide: APP_INTERCEPTOR,
       useClass: ClassSerializerInterceptor,

@@ -3,6 +3,8 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
+  HttpStatus,
   Param,
   Patch,
   Post,
@@ -107,6 +109,7 @@ export class UserProfilesController {
     action: Actions.UPDATE,
     possession: 'own',
   })
+  @HttpCode(HttpStatus.NO_CONTENT)
   @Patch('my')
   updateMyProfile(
     @Body() updateUserProfileDto: UpdateUserProfileDto,
@@ -123,6 +126,7 @@ export class UserProfilesController {
     action: Actions.UPDATE,
     possession: 'own',
   })
+  @HttpCode(HttpStatus.NO_CONTENT)
   @Patch('my/status')
   setAvailable(
     @CurrentUser() user: User,
@@ -139,6 +143,7 @@ export class UserProfilesController {
     action: Actions.UPDATE,
     possession: 'any',
   })
+  @HttpCode(HttpStatus.NO_CONTENT)
   @Patch(':id')
   verifiedProfile(@Param('id') id: string) {
     return this.userProfilesService.verifiedProfile(id);
@@ -149,6 +154,7 @@ export class UserProfilesController {
     action: Actions.UPDATE,
     possession: 'any',
   })
+  @HttpCode(HttpStatus.NO_CONTENT)
   @Patch(':id')
   update(
     @Param('id') id: string,
@@ -162,6 +168,7 @@ export class UserProfilesController {
     action: Actions.DELETE,
     possession: 'any',
   })
+  @HttpCode(HttpStatus.NO_CONTENT)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.userProfilesService.remove(id);
