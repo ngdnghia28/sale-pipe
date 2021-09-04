@@ -6,11 +6,17 @@ import {
   Param,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { UseRoles } from 'nest-access-control';
 import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
 import { Actions, Resources } from 'src/shared/constant';
+import {
+  ApiPageResponse,
+  createPageResponse,
+  PageQuery,
+} from 'src/shared/paging';
 import { User } from 'src/users/user.entity';
 import { CompanyProfilesService } from './company-profiles.service';
 import {
@@ -21,6 +27,7 @@ import {
   UpdateCompanyProfileDto,
   UpdateMyCompanyProfileDto,
 } from './dto/update-company-profile.dto';
+import { CompanyProfile } from './entities/company-profile.entity';
 
 @ApiTags('CompanyProfiles')
 @Controller('company-profiles')
@@ -55,14 +62,19 @@ export class CompanyProfilesController {
     });
   }
 
+  @ApiPageResponse(CompanyProfile)
   @UseRoles({
     resource: Resources.COMPANY_PROFILES,
     action: Actions.READ,
     possession: 'any',
   })
   @Get()
-  findAll() {
-    return this.companyProfilesService.findAll();
+  async findAll(@Query() query: PageQuery) {
+    const result = await this.companyProfilesService.findAll({
+      ...query,
+    });
+
+    return createPageResponse(query, result);
   }
 
   @UseRoles({
