@@ -7,9 +7,9 @@ db:
     type: "mysql"
     host: "us-cdbr-east-04.cleardb.com"
     port: 3306
-    database: "heroku_45e58739a7033b3"
-    username: "b0ce01cf4adc4f"
-    password: "07f7c486"
+    database: "heroku_0433cf592b52eb5"
+    username: "b9eb82d1b8707c"
+    password: "e514cc49"
 
   test:
     type: "mysql"
