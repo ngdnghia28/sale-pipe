@@ -7,13 +7,13 @@ export class addAvaiabilityToUserProfiles1630672180246
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
-      `ALTER TABLE \`test\`.\`user_profiles\` ADD \`is_available\` tinyint NOT NULL DEFAULT 1`,
+      `ALTER TABLE \`user_profiles\` ADD \`is_available\` tinyint NOT NULL DEFAULT 1`,
     );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
-      `ALTER TABLE \`test\`.\`user_profiles\` DROP COLUMN \`is_available\``,
+      `ALTER TABLE \`user_profiles\` DROP COLUMN \`is_available\``,
     );
   }
 }
