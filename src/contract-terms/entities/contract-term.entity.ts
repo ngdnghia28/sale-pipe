@@ -10,6 +10,9 @@ export enum ContractTermStatus {
 }
 @Entity()
 export class ContractTerm extends Base {
+  @Column()
+  contractId: string;
+
   @ManyToOne(() => Contract, {
     onDelete: 'CASCADE',
   })

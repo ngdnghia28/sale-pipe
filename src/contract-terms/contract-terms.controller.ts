@@ -8,16 +8,21 @@ import {
   Delete,
   HttpStatus,
   HttpCode,
+  Query,
+  NotFoundException,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { UseRoles } from 'nest-access-control';
 import { Actions, Resources } from 'src/shared/constant';
+import { createPageResponse, PageQuery } from 'src/shared/paging';
 import { ContractTermsService } from './contract-terms.service';
 import { CreateContractTermDto } from './dto/create-contract-term.dto';
 import { UpdateContractTermDto } from './dto/update-contract-term.dto';
 
+@ApiTags('Contract-terms')
 @Controller('contracts/:contractId/terms')
 export class ContractTermsController {
-  constructor(private readonly contractTermsService: ContractTermsService) { }
+  constructor(private readonly contractTermsService: ContractTermsService) {}
 
   @UseRoles({
     resource: Resources.CONTRACT_TERMS,
@@ -29,7 +34,12 @@ export class ContractTermsController {
     @Param('contractId') contractId: string,
     @Body() createContractTermDto: CreateContractTermDto,
   ) {
-    return this.contractTermsService.create(createContractTermDto);
+    return this.contractTermsService.create({
+      contract: {
+        id: contractId,
+      },
+      ...createContractTermDto,
+    });
   }
 
   @UseRoles({
@@ -38,8 +48,18 @@ export class ContractTermsController {
     possession: 'own',
   })
   @Get()
-  findAll(@Param('contractId') contractId: string,) {
-    return this.contractTermsService.findAll();
+  async findAll(
+    @Param('contractId') contractId: string,
+    @Query() query: PageQuery,
+  ) {
+    const result = await this.contractTermsService.findAll({
+      ...query,
+      where: {
+        contractId,
+      },
+    });
+
+    return createPageResponse(query, result);
   }
 
   @UseRoles({
@@ -48,8 +68,16 @@ export class ContractTermsController {
     possession: 'own',
   })
   @Get(':id')
-  findOne(@Param('contractId') contractId: string, @Param('id') id: string) {
-    return this.contractTermsService.findOne(+id);
+  async findOne(
+    @Param('contractId') contractId: string,
+    @Param('id') id: string,
+  ) {
+    const contractTerm = await this.contractTermsService.findOne(id);
+    if (!contractTerm || contractTerm.contractId !== contractId) {
+      throw new NotFoundException('Contract term not found');
+    }
+
+    return this.contractTermsService.findOne(id);
   }
 
   @UseRoles({
@@ -59,12 +87,17 @@ export class ContractTermsController {
   })
   @HttpCode(HttpStatus.NO_CONTENT)
   @Patch(':id')
-  update(
+  async update(
     @Param('contractId') contractId: string,
     @Param('id') id: string,
     @Body() updateContractTermDto: UpdateContractTermDto,
   ) {
-    return this.contractTermsService.update(+id, updateContractTermDto);
+    const contractTerm = await this.contractTermsService.findOne(id);
+    if (!contractTerm || contractTerm.contractId !== contractId) {
+      throw new NotFoundException('Contract term not found');
+    }
+
+    return this.contractTermsService.update(id, updateContractTermDto);
   }
 
   @UseRoles({
@@ -74,7 +107,15 @@ export class ContractTermsController {
   })
   @HttpCode(HttpStatus.NO_CONTENT)
   @Delete(':id')
-  remove(@Param('contractId') contractId: string, @Param('id') id: string) {
-    return this.contractTermsService.remove(+id);
+  async remove(
+    @Param('contractId') contractId: string,
+    @Param('id') id: string,
+  ) {
+    const contractTerm = await this.contractTermsService.findOne(id);
+    if (!contractTerm || contractTerm.contractId !== contractId) {
+      throw new NotFoundException('Contract term not found');
+    }
+
+    return this.contractTermsService.remove(id);
   }
 }
