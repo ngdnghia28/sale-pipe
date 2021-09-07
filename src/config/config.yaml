@@ -5,11 +5,11 @@ http:
 db:
   mysql:
     type: "mysql"
-    host: "127.0.0.1"
+    host: "us-cdbr-east-04.cleardb.com"
     port: 3306
-    database: "test"
-    username: "devblock"
-    password: "Abc123456"
+    database: "heroku_0433cf592b52eb5"
+    username: "b9eb82d1b8707c"
+    password: "e514cc49"
 
   test:
     type: "mysql"
