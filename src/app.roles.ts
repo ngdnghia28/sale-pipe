@@ -35,6 +35,7 @@ roles
   .createOwn(Resources.CONTRACTS)
   .readOwn(Resources.CONTRACTS)
   .updateOwn(Resources.CONTRACTS)
+  .deleteOwn(Resources.CONTRACTS)
   .createOwn(Resources.CONTRACT_TERMS)
   .readOwn(Resources.CONTRACT_TERMS)
   .updateOwn(Resources.CONTRACT_TERMS)

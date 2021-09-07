@@ -8,16 +8,29 @@ import {
   Delete,
   HttpStatus,
   HttpCode,
+  Query,
+  HttpException,
+  NotFoundException,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { UseRoles } from 'nest-access-control';
+import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
 import { Actions, Resources } from 'src/shared/constant';
+import {
+  ApiPageResponse,
+  createPageResponse,
+  PageQuery,
+} from 'src/shared/paging';
+import { User } from 'src/users/user.entity';
 import { ContractsService } from './contracts.service';
 import { CreateContractDto } from './dto/create-contract.dto';
 import { UpdateContractDto } from './dto/update-contract.dto';
+import { Contract } from './entities/contract.entity';
 
+@ApiTags('contracts')
 @Controller('contracts')
 export class ContractsController {
-  constructor(private readonly contractsService: ContractsService) { }
+  constructor(private readonly contractsService: ContractsService) {}
 
   @UseRoles({
     resource: Resources.CONTRACTS,
@@ -25,28 +38,42 @@ export class ContractsController {
     possession: 'own',
   })
   @Post()
-  create(@Body() createContractDto: CreateContractDto) {
+  create(
+    @Body() createContractDto: CreateContractDto,
+    @CurrentUser() user: User,
+  ) {
+    if (user.id !== createContractDto.hirer.id) {
+      throw new HttpException('Hirer must be current user', 400);
+    }
     return this.contractsService.create(createContractDto);
   }
 
+  @ApiPageResponse(Contract)
   @UseRoles({
     resource: Resources.CONTRACTS,
     action: Actions.READ,
     possession: 'any',
   })
   @Get()
-  findAll() {
-    return this.contractsService.findAll();
+  async findAll(@Query() query: PageQuery) {
+    const result = await this.contractsService.findAll(query);
+    return createPageResponse(query, result);
   }
 
+  @ApiPageResponse(Contract)
   @UseRoles({
     resource: Resources.CONTRACTS,
     action: Actions.READ,
     possession: 'own',
   })
   @Get('my')
-  getMyContracts() {
-    return this.contractsService.findAll();
+  async getMyContracts(@Query() query: PageQuery, @CurrentUser() user: User) {
+    const result = await this.contractsService.findAll({
+      ...query,
+      where: { hirerId: user.id },
+    });
+
+    return createPageResponse(query, result);
   }
 
   @UseRoles({
@@ -66,10 +93,16 @@ export class ContractsController {
   })
   @HttpCode(HttpStatus.NO_CONTENT)
   @Patch(':id')
-  update(
+  async update(
     @Param('id') id: string,
     @Body() updateContractDto: UpdateContractDto,
+    @CurrentUser() user: User,
   ) {
+    const contract = await this.contractsService.findOne(id);
+    if (!contract || contract.hirer.id !== user.id) {
+      throw new NotFoundException('Contract not found');
+    }
+
     return this.contractsService.update(id, updateContractDto);
   }
 
@@ -80,7 +113,12 @@ export class ContractsController {
   })
   @HttpCode(HttpStatus.NO_CONTENT)
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  async remove(@Param('id') id: string, @CurrentUser() user: User) {
+    const contract = await this.contractsService.findOne(id);
+    if (!contract || !contract.hirer || contract.hirer.id !== user.id) {
+      throw new NotFoundException('Contract not found');
+    }
+
     return this.contractsService.remove(id);
   }
 }

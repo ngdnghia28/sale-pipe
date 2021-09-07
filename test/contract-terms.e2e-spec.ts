@@ -32,7 +32,7 @@ describe('contracts (e2e)', () => {
     testUtils = moduleFixture.get<TestUtils>(TestUtils);
     await testUtils.reloadFixtures();
     await app.init();
-  });
+  }, 10000);
 
   afterAll(async () => {
     await app.close();

@@ -9,6 +9,24 @@ import { provideConnection, TestUtils } from './utils';
 describe('contracts (e2e)', () => {
   let app: INestApplication;
   let testUtils: TestUtils;
+  const createContractDto = {
+    hirer: {
+      id: '0a089336-0a48-11ec-bd3f-0242ac140002',
+    },
+    hiree: {
+      id: '00f99098-0a48-11ec-bd3f-0242ac140002',
+    },
+    terms: [
+      {
+        rate: 20,
+        hoursPerWeek: 40,
+        startDate: '2021-09-10T12:46:18.121Z',
+        endDate: '2021-10-10T12:46:18.121Z',
+      },
+    ],
+    startDate: '2021-09-10T12:46:18.121Z',
+    endDate: '2021-10-10T12:46:18.121Z',
+  };
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -119,6 +137,7 @@ describe('contracts (e2e)', () => {
       it('/contracts (POST)', async () => {
         const response = await request(app.getHttpServer())
           .post('/contracts')
+          .send(createContractDto)
           .set('Authorization', `Bearer ${userToken}`);
 
         expect(response.status).toBe(403);
@@ -127,9 +146,13 @@ describe('contracts (e2e)', () => {
       it('/contracts/:id (PATCH)', async () => {
         const response = await request(app.getHttpServer())
           .patch('/contracts/123')
+          .send({
+            startDate: '2021-09-11T12:46:18.121Z',
+            endDate: '2021-09-11T12:46:18.121Z',
+          })
           .set('Authorization', `Bearer ${userToken}`);
 
-        expect(response.status).toBe(204);
+        expect(response.status).toBe(404);
       });
 
       it('/contracts/:id (DELETE)', async () => {
@@ -183,6 +206,7 @@ describe('contracts (e2e)', () => {
       it('/contracts (POST)', async () => {
         const response = await request(app.getHttpServer())
           .post('/contracts')
+          .send(createContractDto)
           .set('Authorization', `Bearer ${hirerToken}`);
 
         expect(response.status).toBe(201);
@@ -191,9 +215,13 @@ describe('contracts (e2e)', () => {
       it('/contracts/:id (PATCH)', async () => {
         const response = await request(app.getHttpServer())
           .patch('/contracts/123')
+          .send({
+            startDate: '2021-09-11T12:46:18.121Z',
+            endDate: '2021-09-11T12:46:18.121Z',
+          })
           .set('Authorization', `Bearer ${hirerToken}`);
 
-        expect(response.status).toBe(204);
+        expect(response.status).toBe(404);
       });
 
       it('/contracts/:id (DELETE)', async () => {
@@ -201,7 +229,7 @@ describe('contracts (e2e)', () => {
           .delete('/contracts/123')
           .set('Authorization', `Bearer ${hirerToken}`);
 
-        expect(response.status).toBe(403);
+        expect(response.status).toBe(404);
       });
     });
 
@@ -239,6 +267,7 @@ describe('contracts (e2e)', () => {
       it('/contracts (POST)', async () => {
         const response = await request(app.getHttpServer())
           .post('/contracts')
+          .send(createContractDto)
           .set('Authorization', `Bearer ${adminToken}`);
 
         expect(response.status).toBe(403);
@@ -247,6 +276,10 @@ describe('contracts (e2e)', () => {
       it('/contracts/:id (PATCH)', async () => {
         const response = await request(app.getHttpServer())
           .patch('/contracts/123')
+          .send({
+            startDate: '2021-09-11T12:46:18.121Z',
+            endDate: '2021-09-11T12:46:18.121Z',
+          })
           .set('Authorization', `Bearer ${adminToken}`);
 
         expect(response.status).toBe(403);
@@ -257,7 +290,7 @@ describe('contracts (e2e)', () => {
           .delete('/contracts/123')
           .set('Authorization', `Bearer ${adminToken}`);
 
-        expect(response.status).toBe(204);
+        expect(response.status).toBe(404);
       });
     });
   });
