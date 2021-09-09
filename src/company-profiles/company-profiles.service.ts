@@ -44,6 +44,10 @@ export class CompanyProfilesService {
   }
 
   async update(id: string, updateCompanyProfileDto: UpdateCompanyProfileDto) {
+    const profile = await this.findOne(id);
+    if (!profile) {
+      throw new HttpException(`Profile ${id} not found`, 404);
+    }
     return this.repo.update(id, updateCompanyProfileDto);
   }
 
@@ -55,11 +59,16 @@ export class CompanyProfilesService {
     if (profile) {
       return this.repo.update(profile.id, updateCompanyProfileDto);
     } else {
-      throw new HttpException(`Profile not fount for ${userId}`, 400);
+      throw new HttpException(`Profile not found for ${userId}`, 404);
     }
   }
 
-  remove(id: string) {
+  async remove(id: string) {
+    const profile = await this.findOne(id);
+    if (!profile) {
+      throw new HttpException(`Profile ${id} not found`, 404);
+    }
+
     return this.repo.delete(id);
   }
 }
