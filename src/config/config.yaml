@@ -26,11 +26,11 @@ auth:
     expiresIn: "0.5d"
 
 email:
-  apiKey: secret
-  defaultSender: sender@gmail.com
+  apiKey: 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
+  defaultSender: nghia.ngd28@gmail.com
   templates:
-    forgotPasswordRequestId: forgotPasswordId
-    changePasswordRequestId: changePasswordRequestId
-    changedPasswordId: changedPasswordId
-    createdAccountId: createdAccountId
-    verifiedAccountId: verifiedAccountId
+    forgotPasswordRequestId: d-828796a5641248218dd0fb663d6987c8
+    changePasswordRequestId: d-17eb9d4fb5cb4f0eb414ea5f53cc9480
+    changedPasswordId: d-e63325a15e1e4ceda64868dec45442b1
+    createdAccountId: d-f7b7b3d72c0b4edcbd2d13ab71106c71
+    verifiedAccountId: d-4461a24676b24ebcb5eb20a2f69d398c
