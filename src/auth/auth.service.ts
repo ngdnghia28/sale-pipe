@@ -5,15 +5,17 @@ import { SignUpDto } from './dto/signup.dto';
 import { compare } from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { User, UserType } from 'src/users/user.entity';
+import { EmailAuthService } from 'src/email/email-auth.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     @Inject(UsersService) private readonly usersService: UsersService,
     @Inject(JwtService) private jwtService: JwtService,
+    @Inject(EmailAuthService) private emailAuthService: EmailAuthService,
   ) { }
 
-  signup(dto: SignUpDto) {
+  async signup(dto: SignUpDto) {
     const user: any = { ...dto };
     switch (dto.type) {
       case UserType.USER:
@@ -31,7 +33,12 @@ export class AuthService {
         ];
         break;
     }
-    return this.usersService.create(user);
+
+    const result = await this.usersService.create(user);
+    await this.emailAuthService.createdAccount({
+      email: dto.email,
+    });
+    return result;
   }
 
   async login(dto: LoginDto) {
