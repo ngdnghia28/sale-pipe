@@ -26,6 +26,7 @@ import { UserProfilesModule } from './user-profiles/user-profiles.module';
 import { UsersModule } from './users/users.module';
 import { ContractsModule } from './contracts/contracts.module';
 import { ContractTermsModule } from './contract-terms/contract-terms.module';
+import { EmailModule } from './email/email.module';
 
 @Module({
   imports: [
@@ -70,6 +71,7 @@ import { ContractTermsModule } from './contract-terms/contract-terms.module';
     CompanyProfilesModule,
     ContractsModule,
     ContractTermsModule,
+    EmailModule,
   ],
   controllers: [AppController],
   providers: [

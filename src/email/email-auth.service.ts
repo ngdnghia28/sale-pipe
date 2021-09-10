@@ -1,0 +1,68 @@
+import { Inject, Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { MailService } from '@sendgrid/mail';
+import {
+  ChangedPasswordDto,
+  ChangePasswordRequestDto,
+  CreatedAcccountDto,
+  ForgotPasswordRequestDto,
+  VerifiedAcccountDto,
+} from './dto';
+import { IEmailConfig } from './interface/IEmailConfig';
+
+@Injectable()
+export class EmailAuthService {
+  private emailConfig: IEmailConfig;
+
+  constructor(
+    private readonly mailService: MailService,
+    @Inject(ConfigService) private readonly configService: ConfigService,
+  ) {
+    this.emailConfig = this.configService.get('email');
+  }
+
+  async createdAccount(dto: CreatedAcccountDto, from?: string) {
+    return this.mailService.send({
+      from: from || this.emailConfig.defaultSender,
+      to: dto.email,
+      templateId: this.emailConfig.templates.createdAccountId,
+      dynamicTemplateData: dto,
+    });
+  }
+
+  async verifiedAccount(dto: VerifiedAcccountDto, from?: string) {
+    return this.mailService.send({
+      from: from || this.emailConfig.defaultSender,
+      to: dto.email,
+      templateId: this.emailConfig.templates.verifiedAccountId,
+      dynamicTemplateData: dto,
+    });
+  }
+
+  async changedPassword(dto: ChangedPasswordDto, from?: string) {
+    return this.mailService.send({
+      from: from || this.emailConfig.defaultSender,
+      to: dto.email,
+      templateId: this.emailConfig.templates.changedPasswordId,
+      dynamicTemplateData: dto,
+    });
+  }
+
+  async changePasswordRequest(dto: ChangePasswordRequestDto, from?: string) {
+    return this.mailService.send({
+      from: from || this.emailConfig.defaultSender,
+      to: dto.email,
+      templateId: this.emailConfig.templates.changePasswordRequestId,
+      dynamicTemplateData: dto,
+    });
+  }
+
+  async forgotPasswordRequest(dto: ForgotPasswordRequestDto, from?: string) {
+    return this.mailService.send({
+      from: from || this.emailConfig.defaultSender,
+      to: dto.email,
+      templateId: this.emailConfig.templates.forgotPasswordRequestId,
+      dynamicTemplateData: dto,
+    });
+  }
+}
