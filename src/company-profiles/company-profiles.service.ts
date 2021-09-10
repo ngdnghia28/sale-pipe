@@ -1,4 +1,4 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import { HttpException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { createMysqlQuery, FindQuery } from 'src/shared/paging';
 import { Repository } from 'typeorm';
@@ -44,6 +44,10 @@ export class CompanyProfilesService {
   }
 
   async update(id: string, updateCompanyProfileDto: UpdateCompanyProfileDto) {
+    const profile = await this.findOne(id);
+    if (!profile) {
+      throw new NotFoundException(`Profile ${id} not found`);
+    }
     return this.repo.update(id, updateCompanyProfileDto);
   }
 
@@ -55,11 +59,16 @@ export class CompanyProfilesService {
     if (profile) {
       return this.repo.update(profile.id, updateCompanyProfileDto);
     } else {
-      throw new HttpException(`Profile not fount for ${userId}`, 400);
+      throw new NotFoundException(`Profile not found for ${userId}`);
     }
   }
 
-  remove(id: string) {
+  async remove(id: string) {
+    const profile = await this.findOne(id);
+    if (!profile) {
+      throw new NotFoundException(`Profile ${id} not found`);
+    }
+
     return this.repo.delete(id);
   }
 }
