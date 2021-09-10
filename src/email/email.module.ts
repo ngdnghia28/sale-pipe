@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { MailService } from '@sendgrid/mail';
+import { EmailAuthService } from './email-auth.service';
 import { IEmailConfig } from './interface/IEmailConfig';
 
 @Module({
@@ -16,6 +17,8 @@ import { IEmailConfig } from './interface/IEmailConfig';
       },
       inject: [ConfigService],
     },
+    EmailAuthService,
   ],
+  exports: [EmailAuthService],
 })
-export class EmailModule { }
+export class EmailModule {}
