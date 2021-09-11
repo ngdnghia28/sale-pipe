@@ -19,7 +19,7 @@ export class CompanyProfile extends Base {
   @Column({
     nullable: true,
   })
-  linked_in?: string;
+  linkedIn?: string;
 
   @Column({
     nullable: true,

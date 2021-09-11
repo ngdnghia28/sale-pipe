@@ -3,7 +3,9 @@ import { Column, Entity } from 'typeorm';
 
 @Entity('countries')
 export class Country extends Base {
-  @Column()
+  @Column({
+    unique: true,
+  })
   code: string;
 
   @Column()

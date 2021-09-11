@@ -16,9 +16,7 @@ import {
 
 @Entity('user_profiles')
 export class UserProfile extends Base {
-  @Column({
-    name: 'user_id',
-  })
+  @Column()
   userId: string;
 
   @OneToOne(() => User)
@@ -26,13 +24,11 @@ export class UserProfile extends Base {
   user: User;
 
   @Column({
-    name: 'is_verified',
     default: false,
   })
   isVerified: boolean;
 
   @Column({
-    name: 'is_available',
     default: true,
   })
   isAvailable: boolean;
@@ -55,7 +51,7 @@ export class UserProfile extends Base {
   @Column({
     nullable: true,
   })
-  linked_in?: string;
+  linkedIn?: string;
 
   @Expose({
     groups: ['owner'],
@@ -67,7 +63,7 @@ export class UserProfile extends Base {
     groups: ['owner'],
   })
   @Column()
-  hours_per_week: number;
+  hoursPerWeek: number;
 
   @Column({
     nullable: true,
@@ -82,9 +78,7 @@ export class UserProfile extends Base {
   })
   bio: string;
 
-  @Column({
-    name: 'country_id',
-  })
+  @Column()
   countryId: string;
 
   @ManyToOne(() => Country, {
@@ -101,7 +95,7 @@ export class UserProfile extends Base {
   @JoinTable({
     name: 'user_profiles_languages',
     joinColumn: {
-      name: 'userProfilesId',
+      name: 'user_profile_id',
     },
     inverseJoinColumn: {
       name: 'languagesId',
@@ -118,7 +112,7 @@ export class UserProfile extends Base {
   @JoinTable({
     name: 'user_profiles_industries',
     joinColumn: {
-      name: 'userProfilesId',
+      name: 'user_profile_id',
     },
     inverseJoinColumn: {
       name: 'industriesId',
@@ -129,16 +123,16 @@ export class UserProfile extends Base {
   @Column({
     nullable: true,
   })
-  sale_channel?: string;
+  saleChannel?: string;
 
   @Column({
     nullable: true,
   })
-  sale_skill?: string;
+  saleSkill?: string;
 
   @Column({
     nullable: true,
     length: 1023,
   })
-  work_history?: string;
+  workHistory?: string;
 }
