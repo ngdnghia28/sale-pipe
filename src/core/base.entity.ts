@@ -9,10 +9,10 @@ export abstract class Base {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @CreateDateColumn({ name: 'created_at' })
+  @CreateDateColumn()
   createdAt: Date;
 
-  @UpdateDateColumn({ name: 'updated_at' })
+  @UpdateDateColumn()
   updatedAt: Date;
 
   @VersionColumn()

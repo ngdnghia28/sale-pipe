@@ -32,7 +32,8 @@ export class TestUtils {
     try {
       const entities = await this.getEntities();
       await this.cleanAll(entities);
-      await this.loadAll(entities);
+      // TODO this not work as expect: Need to run like migration
+      // await this.loadAll(entities);
     } catch (err) {
       throw err;
     }

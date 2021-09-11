@@ -3,12 +3,15 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from 'src/app.module';
 import configuration from 'src/config/configuration';
+import { UsersService } from 'src/users/users.service';
 import * as request from 'supertest';
+import { users } from './fixtures/entity/users';
 import { provideConnection, TestUtils } from './utils';
 
 describe('contracts (e2e)', () => {
   let app: INestApplication;
   let testUtils: TestUtils;
+  let userService: UsersService;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -29,8 +32,14 @@ describe('contracts (e2e)', () => {
     }).compile();
 
     app = moduleFixture.createNestApplication();
+    userService = app.get(UsersService);
     testUtils = moduleFixture.get<TestUtils>(TestUtils);
     await testUtils.reloadFixtures();
+    await Promise.all(
+      users.map((u: any) => {
+        return userService.create(u);
+      }),
+    );
     await app.init();
   }, 10000);
 
@@ -111,7 +120,7 @@ describe('contracts (e2e)', () => {
           .get('/contracts/:contractId/terms/123')
           .set('Authorization', `Bearer ${userToken}`);
 
-        expect(response.status).toBe(200);
+        expect(response.status).toBe(404);
       });
 
       it('/contracts/:contractId/terms (POST)', async () => {
@@ -170,7 +179,7 @@ describe('contracts (e2e)', () => {
           .get('/contracts/:contractId/terms/123')
           .set('Authorization', `Bearer ${hirerToken}`);
 
-        expect(response.status).toBe(200);
+        expect(response.status).toBe(404);
       });
 
       it.skip('/contracts/:contractId/terms (POST)', async () => {
@@ -197,7 +206,7 @@ describe('contracts (e2e)', () => {
           .delete('/contracts/:contractId/terms/123')
           .set('Authorization', `Bearer ${hirerToken}`);
 
-        expect(response.status).toBe(204);
+        expect(response.status).toBe(404);
       });
     });
 
@@ -229,7 +238,7 @@ describe('contracts (e2e)', () => {
           .get('/contracts/:contractId/terms/123')
           .set('Authorization', `Bearer ${adminToken}`);
 
-        expect(response.status).toBe(200);
+        expect(response.status).toBe(404);
       });
 
       it('/contracts/:contractId/terms (POST)', async () => {
@@ -256,7 +265,7 @@ describe('contracts (e2e)', () => {
           .delete('/contracts/:contractId/terms/123')
           .set('Authorization', `Bearer ${adminToken}`);
 
-        expect(response.status).toBe(204);
+        expect(response.status).toBe(404);
       });
     });
   });
@@ -300,14 +309,14 @@ describe('contracts (e2e)', () => {
       expect(userToken).toBeDefined();
     });
 
-    it('/contracts (GET): User can get her contracts', async () => {});
+    it('/contracts (GET): User can get her contracts', async () => { });
 
-    it('/contracts (GET): Hirer can get her contracts', async () => {});
+    it('/contracts (GET): Hirer can get her contracts', async () => { });
 
-    it('/contracts (GET): Hirer can initial a contract', async () => {});
+    it('/contracts (GET): Hirer can initial a contract', async () => { });
 
-    it('/contracts (GET): User can accept a contract', async () => {});
+    it('/contracts (GET): User can accept a contract', async () => { });
 
-    it('/contracts (GET): User can reject a contract', async () => {});
+    it('/contracts (GET): User can reject a contract', async () => { });
   });
 });

@@ -4,7 +4,7 @@ import { Base } from 'src/core/base.entity';
 import { Column, Entity, JoinTable, ManyToMany } from 'typeorm';
 
 export enum UserType {
-  USER = 'USER',
+  SDR = 'SDR',
   HIRER = 'HIRER',
   SYSTEM = 'SYSTEM',
 }
@@ -36,27 +36,22 @@ export class User extends Base {
   @JoinTable({
     name: 'users_roles',
     joinColumn: {
-      name: 'usersId',
+      name: 'user_id',
     },
     inverseJoinColumn: {
-      name: 'rolesId',
+      name: 'role_id',
     },
   })
   roles: Role[];
 
-  @Column({
-    name: 'first_name',
-  })
+  @Column()
   firstName: string;
 
-  @Column({
-    name: 'last_name',
-  })
+  @Column()
   lastName: string;
 
   @Column({
     default: false,
-    name: 'is_active',
   })
   isActive: boolean;
 }

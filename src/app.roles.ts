@@ -19,7 +19,7 @@ const publicResources = [
 export const roles: RolesBuilder = new RolesBuilder();
 
 roles
-  .grant(Roles.USER)
+  .grant(Roles.SDR)
   .createOwn(Resources.USER_PROFILES)
   .updateOwn(Resources.USER_PROFILES)
   .readOwn(Resources.USER_PROFILES)

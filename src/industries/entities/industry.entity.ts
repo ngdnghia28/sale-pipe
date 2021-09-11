@@ -3,7 +3,9 @@ import { Column, Entity } from 'typeorm';
 
 @Entity('industries')
 export class Industry extends Base {
-  @Column()
+  @Column({
+    unique: true,
+  })
   code: string;
 
   @Column()

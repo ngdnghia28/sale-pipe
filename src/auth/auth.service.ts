@@ -18,7 +18,7 @@ export class AuthService {
   async signup(dto: SignUpDto) {
     const user: any = { ...dto };
     switch (dto.type) {
-      case UserType.USER:
+      case UserType.SDR:
         user.roles = [
           {
             id: '90df268d-0947-11ec-9b25-0242ac140002',

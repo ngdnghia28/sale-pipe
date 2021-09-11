@@ -3,7 +3,9 @@ import { Column, Entity } from 'typeorm';
 
 @Entity('languages')
 export class Language extends Base {
-  @Column()
+  @Column({
+    unique: true,
+  })
   code: string;
 
   @Column()
