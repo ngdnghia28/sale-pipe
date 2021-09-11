@@ -11,7 +11,7 @@ export enum Resources {
 }
 
 export enum Roles {
-  USER = 'USER',
+  SDR = 'SDR',
   HIRER = 'HIRER',
   ADMIN = 'ADMIN',
 }

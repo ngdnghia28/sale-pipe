@@ -418,9 +418,9 @@ describe('User-profiles (e2e)', () => {
       expect(profile).toBeDefined();
       expect(profile.email).toBeUndefined();
       expect(profile.phone).toBeUndefined();
-      expect(profile.linked_in).toBeUndefined();
+      expect(profile.linkedIn).toBeUndefined();
       expect(profile.rate).toBeUndefined();
-      expect(profile.hours_per_week).toBeUndefined();
+      expect(profile.hoursPerWeek).toBeUndefined();
     });
 
     it('/user-profiles/my (GET): Owner can see all fields', async () => {
@@ -459,9 +459,9 @@ describe('User-profiles (e2e)', () => {
       expect(profile).toBeDefined();
       expect(profile.email).toBeDefined();
       expect(profile.phone).toBeDefined();
-      expect(profile.linked_in).toBeDefined();
+      expect(profile.linkedIn).toBeDefined();
       expect(profile.rate).toBeDefined();
-      expect(profile.hours_per_week).toBeDefined();
+      expect(profile.hoursPerWeek).toBeDefined();
     });
 
     it('/user-profiles/my/status (PATCH): Owner can switch avaiability status', async () => {
