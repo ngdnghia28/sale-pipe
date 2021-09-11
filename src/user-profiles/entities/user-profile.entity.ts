@@ -98,7 +98,7 @@ export class UserProfile extends Base {
       name: 'user_profile_id',
     },
     inverseJoinColumn: {
-      name: 'languagesId',
+      name: 'language_id',
     },
   })
   languages: Language[];
@@ -115,7 +115,7 @@ export class UserProfile extends Base {
       name: 'user_profile_id',
     },
     inverseJoinColumn: {
-      name: 'industriesId',
+      name: 'industry_id',
     },
   })
   industries: Industry[];

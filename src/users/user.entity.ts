@@ -39,7 +39,7 @@ export class User extends Base {
       name: 'user_id',
     },
     inverseJoinColumn: {
-      name: 'rolesId',
+      name: 'role_id',
     },
   })
   roles: Role[];
