@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsUUID } from 'class-validator';
 
 export class CreatedAcccountDto {
   @ApiProperty({
@@ -13,6 +13,6 @@ export class CreatedAcccountDto {
     example: 'c218f833-6a70-4034-9b5f-a5b6c51c8571',
   })
   @IsNotEmpty()
-  @IsString()
-  nonce?: string;
+  @IsUUID()
+  code: string;
 }

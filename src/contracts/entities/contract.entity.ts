@@ -1,6 +1,6 @@
 import { ContractTerm } from 'src/contract-terms/entities/contract-term.entity';
 import { Base } from 'src/core/base.entity';
-import { User } from 'src/users/user.entity';
+import { User } from 'src/users/entities/user.entity';
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 
 export enum ContractStatus {

@@ -1,4 +1,4 @@
-import { UserType } from 'src/users/user.entity';
+import { UserType } from 'src/users/entities/user.entity';
 
 export const users = [
   {

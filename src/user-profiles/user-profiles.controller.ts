@@ -21,7 +21,7 @@ import {
   PageQuery,
   PageResponse,
 } from 'src/shared/paging';
-import { User } from 'src/users/user.entity';
+import { User } from 'src/users/entities/user.entity';
 import {
   CreateMyUserProfileDto,
   CreateUserProfileDto,

@@ -19,7 +19,7 @@ import {
   createPageResponse,
   PageQuery,
 } from 'src/shared/paging';
-import { User } from 'src/users/user.entity';
+import { User } from 'src/users/entities/user.entity';
 import { CompanyProfilesService } from './company-profiles.service';
 import {
   CreateCompanyProfileDto,

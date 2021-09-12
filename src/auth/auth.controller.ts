@@ -14,6 +14,7 @@ import { UsersService } from 'src/users/users.service';
 import { AuthService } from './auth.service';
 import { Public } from './decorators/public.decorator';
 import { LoginDto } from './dto/login.dto';
+import { SignupConfirmDto } from './dto/signup-confirm.dto';
 import { SignUpDto } from './dto/signup.dto';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 
@@ -35,6 +36,12 @@ export class AuthController {
   @Post('signup')
   signup(@Body() dto: SignUpDto) {
     return this.authService.signup(dto);
+  }
+
+  @Public()
+  @Post('signup/confirm')
+  signupConfirm(@Body() dto: SignupConfirmDto) {
+    return this.authService.verify(dto.code);
   }
 
   @Public()
