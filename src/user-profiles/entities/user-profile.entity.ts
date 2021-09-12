@@ -3,7 +3,7 @@ import { Base } from 'src/core/base.entity';
 import { Country } from 'src/countries/entities/country.entity';
 import { Industry } from 'src/industries/entities/industry.entity';
 import { Language } from 'src/languages/entities/language.entity';
-import { User } from 'src/users/user.entity';
+import { User } from 'src/users/entities/user.entity';
 import {
   Column,
   Entity,

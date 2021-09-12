@@ -1,7 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { User } from './user.entity';
+import { User } from './entities/user.entity';
 import { hash } from 'bcrypt';
 
 const HASH_ROUND = 10;
@@ -23,7 +23,7 @@ export class UsersService {
   }
 
   findOne(id: string): Promise<User> {
-    return this.usersRepository.findOne(id);
+    return this.usersRepository.findOneOrFail(id);
   }
 
   findByEmail(email: string): Promise<User> {
@@ -32,7 +32,13 @@ export class UsersService {
     });
   }
 
+  async setActive(id: string): Promise<void> {
+    await this.usersRepository.findOneOrFail(id);
+    await this.usersRepository.update(id, { isActive: true });
+  }
+
   async delete(id: string): Promise<void> {
+    await this.usersRepository.findOneOrFail(id);
     await this.usersRepository.delete(id);
   }
 }

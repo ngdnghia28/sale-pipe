@@ -38,6 +38,7 @@
     "class-validator": "^0.13.1",
     "faker": "^5.5.3",
     "js-yaml": "^4.1.0",
+    "moment": "^2.29.1",
     "mysql2": "^2.3.0",
     "nest-access-control": "^2.0.2",
     "passport": "^0.4.1",

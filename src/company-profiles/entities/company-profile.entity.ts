@@ -1,5 +1,5 @@
 import { Base } from 'src/core/base.entity';
-import { User } from 'src/users/user.entity';
+import { User } from 'src/users/entities/user.entity';
 import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
 
 @Entity('company_profiles')

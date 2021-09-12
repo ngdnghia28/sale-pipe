@@ -4,14 +4,16 @@ import { LoginDto } from './dto/login.dto';
 import { SignUpDto } from './dto/signup.dto';
 import { compare } from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
-import { User, UserType } from 'src/users/user.entity';
+import { User, UserType } from 'src/users/entities/user.entity';
 import { EmailAuthService } from 'src/email/email-auth.service';
+import { SignupTokenService } from './signup-token.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     @Inject(UsersService) private readonly usersService: UsersService,
     @Inject(JwtService) private jwtService: JwtService,
+    @Inject(SignupTokenService) private signupTokenService: SignupTokenService,
     @Inject(EmailAuthService) private emailAuthService: EmailAuthService,
   ) { }
 
@@ -35,8 +37,10 @@ export class AuthService {
     }
 
     const result = await this.usersService.create(user);
+    const token = await this.signupTokenService.create(result.id);
     await this.emailAuthService.createdAccount({
       email: dto.email,
+      code: token.code,
     });
     return result;
   }
@@ -56,5 +60,9 @@ export class AuthService {
     return {
       access_token: this.jwtService.sign(payload),
     };
+  }
+
+  async verify(code: string) {
+    return this.signupTokenService.verify(code);
   }
 }

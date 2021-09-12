@@ -21,7 +21,7 @@ import {
   createPageResponse,
   PageQuery,
 } from 'src/shared/paging';
-import { User } from 'src/users/user.entity';
+import { User } from 'src/users/entities/user.entity';
 import { ContractsService } from './contracts.service';
 import { CreateContractDto } from './dto/create-contract.dto';
 import { UpdateContractDto } from './dto/update-contract.dto';
