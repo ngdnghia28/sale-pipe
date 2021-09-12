@@ -5,6 +5,7 @@ import * as moment from 'moment';
 import { AppModule } from 'src/app.module';
 import { SignupTokenService } from 'src/auth/signup-token.service';
 import configuration from 'src/config/configuration';
+import { EmailAuthService } from 'src/email/email-auth.service';
 import { UsersService } from 'src/users/users.service';
 import * as request from 'supertest';
 import { users } from './fixtures/entity/users';
@@ -14,6 +15,7 @@ describe('Auth (e2e)', () => {
   let app: INestApplication;
   let signupTokenService: SignupTokenService;
   let userService: UsersService;
+  let emailAuthService: EmailAuthService;
   let testUtils: TestUtils;
 
   beforeAll(async () => {
@@ -39,13 +41,15 @@ describe('Auth (e2e)', () => {
     signupTokenService = app.get(SignupTokenService);
     await testUtils.reloadFixtures();
     userService = app.get(UsersService);
+    emailAuthService = app.get(EmailAuthService);
+    emailAuthService.createdAccount = jest.fn();
     await Promise.all(
       users.map((u: any) => {
         return userService.create(u);
       }),
     );
     await app.init();
-  });
+  }, 10000);
 
   afterAll(async () => {
     await app.close();
@@ -165,6 +169,8 @@ describe('Auth (e2e)', () => {
             lastName: 'user10',
           });
         expect(response.status).toBe(201);
+
+        expect(emailAuthService.createdAccount).toHaveBeenCalled();
 
         const token = await signupTokenService.findByUserId(response.body.id);
         await signupTokenService.updateByUserId(response.body.id, {
