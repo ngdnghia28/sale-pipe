@@ -13,6 +13,8 @@ import { ApiTags } from '@nestjs/swagger';
 import { UsersService } from 'src/users/users.service';
 import { AuthService } from './auth.service';
 import { Public } from './decorators/public.decorator';
+import { ForgotPasswordRequestDto } from './dto/forgot-password-request.dto';
+import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { LoginDto } from './dto/login.dto';
 import { SignupConfirmDto } from './dto/signup-confirm.dto';
 import { SignUpDto } from './dto/signup.dto';
@@ -24,7 +26,7 @@ export class AuthController {
   constructor(
     @Inject(UsersService) private readonly usersService: UsersService,
     @Inject(AuthService) private readonly authService: AuthService,
-  ) {}
+  ) { }
 
   @Public()
   @Get('users')
@@ -42,6 +44,18 @@ export class AuthController {
   @Post('signup/confirm')
   signupConfirm(@Body() dto: SignupConfirmDto) {
     return this.authService.verify(dto.code);
+  }
+
+  @Public()
+  @Post('forgot-password-request')
+  forgotPasswordRequest(@Body() dto: ForgotPasswordRequestDto) {
+    return this.authService.forgotPasswordRequest(dto.email);
+  }
+
+  @Public()
+  @Post('forgot-password-change')
+  forgotPasswordChange(@Body() dto: ForgotPasswordDto) {
+    return this.authService.forgotPasswordChange(dto);
   }
 
   @Public()

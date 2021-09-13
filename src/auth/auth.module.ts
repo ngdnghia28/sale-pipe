@@ -11,10 +11,12 @@ import { EmailModule } from 'src/email/email.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { SignupToken } from './entities/signup-token.entity';
 import { SignupTokenService } from './signup-token.service';
+import { ForgotPasswordToken } from './entities/forgot-password-token.entity';
+import { ForgotPasswordTokenService } from './forgot-password-token.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([SignupToken]),
+    TypeOrmModule.forFeature([SignupToken, ForgotPasswordToken]),
     PassportModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
@@ -26,7 +28,13 @@ import { SignupTokenService } from './signup-token.service';
     UsersModule,
     EmailModule,
   ],
-  providers: [AuthService, SignupTokenService, LocalStrategy, JwtStrategy],
+  providers: [
+    AuthService,
+    SignupTokenService,
+    ForgotPasswordTokenService,
+    LocalStrategy,
+    JwtStrategy,
+  ],
   controllers: [AuthController],
 })
 export class AuthModule {}

@@ -7,6 +7,8 @@ import { JwtService } from '@nestjs/jwt';
 import { User, UserType } from 'src/users/entities/user.entity';
 import { EmailAuthService } from 'src/email/email-auth.service';
 import { SignupTokenService } from './signup-token.service';
+import { ForgotPasswordTokenService } from './forgot-password-token.service';
+import { ForgotPasswordDto } from './dto/forgot-password.dto';
 
 @Injectable()
 export class AuthService {
@@ -14,6 +16,8 @@ export class AuthService {
     @Inject(UsersService) private readonly usersService: UsersService,
     @Inject(JwtService) private jwtService: JwtService,
     @Inject(SignupTokenService) private signupTokenService: SignupTokenService,
+    @Inject(ForgotPasswordTokenService)
+    private forgotPasswordTokenService: ForgotPasswordTokenService,
     @Inject(EmailAuthService) private emailAuthService: EmailAuthService,
   ) { }
 
@@ -64,5 +68,18 @@ export class AuthService {
 
   async verify(code: string) {
     return this.signupTokenService.verify(code);
+  }
+
+  async forgotPasswordRequest(email: string) {
+    const user = await this.usersService.findByEmail(email);
+    const token = await this.forgotPasswordTokenService.create(user.id);
+    await this.emailAuthService.forgotPasswordRequest({
+      email,
+      code: token.code,
+    });
+  }
+
+  async forgotPasswordChange(dto: ForgotPasswordDto) {
+    return this.forgotPasswordTokenService.changePassword(dto);
   }
 }

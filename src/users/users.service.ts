@@ -11,11 +11,25 @@ export class UsersService {
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,
-  ) {}
+  ) { }
 
   async create(dto: Partial<User>): Promise<User> {
     dto.password = await hash(dto.password, HASH_ROUND);
     return this.usersRepository.save(this.usersRepository.create(dto));
+  }
+
+  async updatePassword(id: string, password: string): Promise<void> {
+    await this.usersRepository.findOneOrFail(id);
+    const hashPassword = await hash(password, HASH_ROUND);
+    await this.usersRepository.update(id, { password: hashPassword });
+  }
+
+  async update(
+    id: string,
+    dto: Partial<Omit<User, 'password'>>,
+  ): Promise<void> {
+    await this.usersRepository.findOneOrFail(id);
+    await this.usersRepository.update(id, dto);
   }
 
   findAll(): Promise<User[]> {
