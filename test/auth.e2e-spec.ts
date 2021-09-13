@@ -3,6 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import * as moment from 'moment';
 import { AppModule } from 'src/app.module';
+import { ForgotPasswordTokenService } from 'src/auth/forgot-password-token.service';
 import { SignupTokenService } from 'src/auth/signup-token.service';
 import configuration from 'src/config/configuration';
 import { EmailAuthService } from 'src/email/email-auth.service';
@@ -14,6 +15,7 @@ import { provideConnection, TestUtils } from './utils';
 describe('Auth (e2e)', () => {
   let app: INestApplication;
   let signupTokenService: SignupTokenService;
+  let forgotPasswordTokenService: ForgotPasswordTokenService;
   let userService: UsersService;
   let emailAuthService: EmailAuthService;
   let testUtils: TestUtils;
@@ -39,10 +41,12 @@ describe('Auth (e2e)', () => {
     app = moduleFixture.createNestApplication();
     testUtils = moduleFixture.get<TestUtils>(TestUtils);
     signupTokenService = app.get(SignupTokenService);
+    forgotPasswordTokenService = app.get(ForgotPasswordTokenService);
     await testUtils.reloadFixtures();
     userService = app.get(UsersService);
     emailAuthService = app.get(EmailAuthService);
     emailAuthService.createdAccount = jest.fn();
+    emailAuthService.forgotPasswordRequest = jest.fn();
     await Promise.all(
       users.map((u: any) => {
         return userService.create(u);
@@ -102,7 +106,7 @@ describe('Auth (e2e)', () => {
       expect(response.body.password).toBeUndefined();
     });
 
-    describe('Confirm account', () => {
+    describe('Confirm account (e2e)', () => {
       it('/auth/signup/confirm (POST): Can confirm account with correct code', async () => {
         const response = await request(app.getHttpServer())
           .post('/auth/signup')
@@ -174,7 +178,7 @@ describe('Auth (e2e)', () => {
 
         const token = await signupTokenService.findByUserId(response.body.id);
         await signupTokenService.updateByUserId(response.body.id, {
-          expiryDate: new Date(),
+          expiryDate: moment().add(-1, 'minutes').toDate(),
         });
 
         const confirmResponse = await request(app.getHttpServer())
@@ -185,6 +189,132 @@ describe('Auth (e2e)', () => {
 
         expect(confirmResponse.status).toBe(400);
       }, 10000);
+    });
+
+    describe('Forgot password (e2e)', () => {
+      it('/auth/forgot-password-request (POST): Can request forgot password', async () => {
+        const userResponse = await request(app.getHttpServer())
+          .post('/auth/signup')
+          .send({
+            type: 'SDR',
+            username: 'user11',
+            email: 'user11@gmail.com',
+            password: 'password',
+            firstName: 'user11',
+            lastName: 'user11',
+          });
+        expect(userResponse.status).toBe(201);
+
+        const response = await request(app.getHttpServer())
+          .post('/auth/forgot-password-request')
+          .send({
+            email: 'user11@gmail.com',
+          });
+
+        expect(response.status).toBe(201);
+        expect(emailAuthService.forgotPasswordRequest).toHaveBeenCalledTimes(1);
+
+        const token = await forgotPasswordTokenService.findByUserId(
+          userResponse.body.id,
+        );
+
+        expect(token.code).toBeDefined();
+        expect(token.userId).toBe(userResponse.body.id);
+        expect(token.expiryDate.getTime()).toBeLessThanOrEqual(
+          moment().add(25, 'hours').toDate().getTime(),
+        );
+        expect(token.expiryDate.getTime()).toBeGreaterThanOrEqual(
+          moment().add(23, 'hours').toDate().getTime(),
+        );
+
+        const confirmResponse = await request(app.getHttpServer())
+          .post('/auth/forgot-password-change')
+          .send({
+            code: token.code,
+            email: 'user11@gmail.com',
+            password: '123',
+          });
+
+        expect(confirmResponse.status).toBe(201);
+      });
+
+      it('/auth/forgot-password-request (POST): Can change request forgot password with wrong email', async () => {
+        const response = await request(app.getHttpServer())
+          .post('/auth/forgot-password-request')
+          .send({
+            email: 'user99@gmail.com',
+          });
+
+        expect(response.status).toBe(404);
+      });
+
+      it('/auth/forgot-password-change (POST): Can change forgot password with wrong code', async () => {
+        const userResponse = await request(app.getHttpServer())
+          .post('/auth/signup')
+          .send({
+            type: 'SDR',
+            username: 'user12',
+            email: 'user12@gmail.com',
+            password: 'password',
+            firstName: 'user12',
+            lastName: 'user12',
+          });
+        expect(userResponse.status).toBe(201);
+
+        const response = await request(app.getHttpServer())
+          .post('/auth/forgot-password-request')
+          .send({
+            email: 'user12@gmail.com',
+          });
+
+        expect(response.status).toBe(201);
+
+        const confirmResponse = await request(app.getHttpServer())
+          .post('/auth/forgot-password-change')
+          .send({
+            code: 'eead32da-c5d2-4710-be80-10b7106ad215',
+            email: 'user12@gmail.com',
+            password: '123',
+          });
+
+        expect(confirmResponse.status).toBe(404);
+      });
+
+      it('/auth/forgot-password-request (POST): Can change forgot password with wrong email', async () => {
+        const userResponse = await request(app.getHttpServer())
+          .post('/auth/signup')
+          .send({
+            type: 'SDR',
+            username: 'user13',
+            email: 'user13@gmail.com',
+            password: 'password',
+            firstName: 'user13',
+            lastName: 'user13',
+          });
+        expect(userResponse.status).toBe(201);
+
+        const response = await request(app.getHttpServer())
+          .post('/auth/forgot-password-request')
+          .send({
+            email: 'user13@gmail.com',
+          });
+
+        expect(response.status).toBe(201);
+
+        const token = await forgotPasswordTokenService.findByUserId(
+          userResponse.body.id,
+        );
+
+        const confirmResponse = await request(app.getHttpServer())
+          .post('/auth/forgot-password-change')
+          .send({
+            code: token.code,
+            email: 'user14@gmail.com',
+            password: '123',
+          });
+
+        expect(confirmResponse.status).toBe(404);
+      });
     });
   });
 });
