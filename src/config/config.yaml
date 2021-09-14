@@ -21,6 +21,10 @@ db:
     logging: false
 
 auth:
+  signup:
+    expiresIn: "24"   # hours
+  forgotPassword:
+    expiresIn: "24"   # hours
   secret: "12345"
   signOptions:
     expiresIn: "0.5d"
