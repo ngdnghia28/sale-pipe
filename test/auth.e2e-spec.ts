@@ -316,5 +316,84 @@ describe('Auth (e2e)', () => {
         expect(confirmResponse.status).toBe(404);
       });
     });
+
+    describe('Change password (e2e)', () => {
+      it('/auth/change-password-request (POST): Can change password', async () => {
+        const userResponse = await request(app.getHttpServer())
+          .post('/auth/signup')
+          .send({
+            type: 'SDR',
+            username: 'user14',
+            email: 'user14@gmail.com',
+            password: 'password',
+            firstName: 'user14',
+            lastName: 'user14',
+          });
+        expect(userResponse.status).toBe(201);
+
+        const loginResponse = await request(app.getHttpServer())
+          .post('/auth/login')
+          .send({
+            email: 'user14@gmail.com',
+            password: 'password',
+          });
+
+        const authToken = loginResponse.body.access_token;
+        expect(authToken).toBeDefined();
+
+        const response = await request(app.getHttpServer())
+          .post('/auth/change-password')
+          .set('authorization', `Bearer ${authToken}`)
+          .send({
+            oldPassword: 'password',
+            password: 'password2',
+          });
+
+        expect(response.status).toBe(201);
+
+        const changedPasswordResponse = await request(app.getHttpServer())
+          .post('/auth/login')
+          .send({
+            email: 'user14@gmail.com',
+            password: 'password2',
+          });
+
+        expect(changedPasswordResponse.status).toBe(200);
+      });
+
+      it('/auth/change-password-request (POST): Can not with wrong old password', async () => {
+        const userResponse = await request(app.getHttpServer())
+          .post('/auth/signup')
+          .send({
+            type: 'SDR',
+            username: 'user15',
+            email: 'user15@gmail.com',
+            password: 'password',
+            firstName: 'user15',
+            lastName: 'user15',
+          });
+        expect(userResponse.status).toBe(201);
+
+        const loginResponse = await request(app.getHttpServer())
+          .post('/auth/login')
+          .send({
+            email: 'user15@gmail.com',
+            password: 'password',
+          });
+
+        const authToken = loginResponse.body.access_token;
+        expect(authToken).toBeDefined();
+
+        const response = await request(app.getHttpServer())
+          .post('/auth/change-password')
+          .set('authorization', `Bearer ${authToken}`)
+          .send({
+            oldPassword: 'wrong',
+            password: 'password2',
+          });
+
+        expect(response.status).toBe(404);
+      });
+    });
   });
 });

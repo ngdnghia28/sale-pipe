@@ -10,9 +10,14 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+import { UseRoles } from 'nest-access-control';
+import { Actions, Resources } from 'src/shared/constant';
+import { User } from 'src/users/entities/user.entity';
 import { UsersService } from 'src/users/users.service';
 import { AuthService } from './auth.service';
+import { CurrentUser } from './decorators/current-user.decorator';
 import { Public } from './decorators/public.decorator';
+import { ChangePasswordRequestDto } from './dto/change-password-request.dto';
 import { ForgotPasswordRequestDto } from './dto/forgot-password-request.dto';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { LoginDto } from './dto/login.dto';
@@ -26,13 +31,7 @@ export class AuthController {
   constructor(
     @Inject(UsersService) private readonly usersService: UsersService,
     @Inject(AuthService) private readonly authService: AuthService,
-  ) { }
-
-  @Public()
-  @Get('users')
-  getUsers() {
-    return this.usersService.findAll();
-  }
+  ) {}
 
   @Public()
   @Post('signup')
@@ -58,6 +57,22 @@ export class AuthController {
     return this.authService.forgotPasswordChange(dto);
   }
 
+  @UseRoles({
+    resource: Resources.AUTH,
+    action: Actions.UPDATE,
+    possession: 'own',
+  })
+  @Post('change-password')
+  async changePassword(
+    @Body() dto: ChangePasswordRequestDto,
+    @CurrentUser() user: User,
+  ) {
+    await this.authService.changePassword({
+      ...dto,
+      email: user.email,
+    });
+  }
+
   @Public()
   @UseGuards(LocalAuthGuard)
   @HttpCode(HttpStatus.OK)
@@ -66,6 +81,11 @@ export class AuthController {
     return this.authService.sign(req.user);
   }
 
+  @UseRoles({
+    resource: Resources.AUTH,
+    action: Actions.READ,
+    possession: 'own',
+  })
   @Get('me')
   getProfile(@Request() req) {
     return req.user;

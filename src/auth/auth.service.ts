@@ -1,14 +1,15 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import { compare, compareSync } from 'bcrypt';
+import { EmailAuthService } from 'src/email/email-auth.service';
+import { User, UserType } from 'src/users/entities/user.entity';
 import { UsersService } from 'src/users/users.service';
+import { ChangePasswordDto } from './dto/change-password.dto';
+import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { LoginDto } from './dto/login.dto';
 import { SignUpDto } from './dto/signup.dto';
-import { compare } from 'bcrypt';
-import { JwtService } from '@nestjs/jwt';
-import { User, UserType } from 'src/users/entities/user.entity';
-import { EmailAuthService } from 'src/email/email-auth.service';
-import { SignupTokenService } from './signup-token.service';
 import { ForgotPasswordTokenService } from './forgot-password-token.service';
-import { ForgotPasswordDto } from './dto/forgot-password.dto';
+import { SignupTokenService } from './signup-token.service';
 
 @Injectable()
 export class AuthService {
@@ -57,7 +58,7 @@ export class AuthService {
 
   async sign(user: User) {
     const payload = {
-      email: user.username,
+      email: user.email,
       sub: user.id,
       roles: (user?.roles || []).map((r) => r.code),
     };
@@ -80,6 +81,22 @@ export class AuthService {
   }
 
   async forgotPasswordChange(dto: ForgotPasswordDto) {
-    return this.forgotPasswordTokenService.changePassword(dto);
+    await this.forgotPasswordTokenService.changePassword(dto);
+    return this.emailAuthService.changedPassword({
+      email: dto.email,
+    });
+  }
+
+  async changePassword(dto: ChangePasswordDto) {
+    const user = await this.usersService.findByEmail(dto.email);
+
+    if (!compareSync(dto.oldPassword, user.password)) {
+      throw new NotFoundException('User not found');
+    } else {
+      await this.usersService.updatePassword(user.id, dto.password);
+      return this.emailAuthService.changedPassword({
+        email: dto.email,
+      });
+    }
   }
 }
