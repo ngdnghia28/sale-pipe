@@ -20,6 +20,8 @@ export const roles: RolesBuilder = new RolesBuilder();
 
 roles
   .grant(Roles.SDR)
+  .readOwn(Resources.AUTH)
+  .updateOwn(Resources.AUTH)
   .createOwn(Resources.USER_PROFILES)
   .updateOwn(Resources.USER_PROFILES)
   .readOwn(Resources.USER_PROFILES)
@@ -29,6 +31,8 @@ roles
   .updateOwn(Resources.CONTRACT_TERMS)
 
   .grant(Roles.HIRER)
+  .readOwn(Resources.AUTH)
+  .updateOwn(Resources.AUTH)
   .createOwn(Resources.COMPANY_PROFILES)
   .updateOwn(Resources.COMPANY_PROFILES)
   .readAny(Resources.USER_PROFILES)
@@ -42,6 +46,8 @@ roles
   .deleteOwn(Resources.CONTRACT_TERMS)
 
   .grant(Roles.ADMIN)
+  .readOwn(Resources.AUTH)
+  .updateOwn(Resources.AUTH)
   .createAny(publicResources)
   .updateAny(publicResources)
   .deleteAny(allResources)
