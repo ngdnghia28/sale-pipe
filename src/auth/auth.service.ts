@@ -1,4 +1,9 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { compare, compareSync } from 'bcrypt';
 import { EmailAuthService } from 'src/email/email-auth.service';
@@ -7,9 +12,13 @@ import { UsersService } from 'src/users/users.service';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { LoginDto } from './dto/login.dto';
+import { SignupEmailConfirmDto } from './dto/signup-email-confirm.dto';
+import { SignupPrepareDto } from './dto/signup-prepare.dto';
 import { SignUpDto } from './dto/signup.dto';
 import { ForgotPasswordTokenService } from './forgot-password-token.service';
+import { SignupPrepareTokenService } from './signup-prepare-token.service';
 import { SignupTokenService } from './signup-token.service';
+import * as _ from 'lodash';
 
 @Injectable()
 export class AuthService {
@@ -17,10 +26,56 @@ export class AuthService {
     @Inject(UsersService) private readonly usersService: UsersService,
     @Inject(JwtService) private jwtService: JwtService,
     @Inject(SignupTokenService) private signupTokenService: SignupTokenService,
+    @Inject(SignupPrepareTokenService)
+    private signupPrepareTokenService: SignupPrepareTokenService,
     @Inject(ForgotPasswordTokenService)
     private forgotPasswordTokenService: ForgotPasswordTokenService,
     @Inject(EmailAuthService) private emailAuthService: EmailAuthService,
-  ) { }
+  ) {}
+
+  async signupEmailPrepare(dto: SignupPrepareDto) {
+    const token = await this.signupPrepareTokenService.create(dto.email);
+    return this.emailAuthService.signupEmailPrepare({
+      email: dto.email,
+      code: token.code,
+    });
+  }
+
+  async signupEmailConfirm(dto: SignupEmailConfirmDto) {
+    const token = await this.signupPrepareTokenService.findByEmail(dto.email);
+
+    if (!token || token.code !== dto.code) {
+      throw new NotFoundException('Signup token not found');
+    } else if (token.expiryDate < new Date()) {
+      throw new BadRequestException('Signup token expired');
+    }
+
+    this.signupPrepareTokenService.delete(token.id);
+
+    const user: any = { ..._.omit(dto), isActive: true };
+    switch (dto.type) {
+      case UserType.SDR:
+        user.roles = [
+          {
+            id: '90df268d-0947-11ec-9b25-0242ac140002',
+          },
+        ];
+        break;
+      case UserType.HIRER:
+        user.roles = [
+          {
+            id: '0378cee7-0948-11ec-9b25-0242ac140002',
+          },
+        ];
+        break;
+    }
+
+    await this.emailAuthService.signupEmailConfirm({
+      email: dto.email,
+    });
+
+    return this.usersService.create(user);
+  }
 
   async signup(dto: SignUpDto) {
     const user: any = { ...dto };

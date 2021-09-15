@@ -13,10 +13,16 @@ import { SignupToken } from './entities/signup-token.entity';
 import { SignupTokenService } from './signup-token.service';
 import { ForgotPasswordToken } from './entities/forgot-password-token.entity';
 import { ForgotPasswordTokenService } from './forgot-password-token.service';
+import { SignupPrepareToken } from './entities/signup-prepare-token.entity';
+import { SignupPrepareTokenService } from './signup-prepare-token.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([SignupToken, ForgotPasswordToken]),
+    TypeOrmModule.forFeature([
+      SignupPrepareToken,
+      SignupToken,
+      ForgotPasswordToken,
+    ]),
     PassportModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
@@ -30,6 +36,7 @@ import { ForgotPasswordTokenService } from './forgot-password-token.service';
   ],
   providers: [
     AuthService,
+    SignupPrepareTokenService,
     SignupTokenService,
     ForgotPasswordTokenService,
     LocalStrategy,

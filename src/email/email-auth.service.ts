@@ -8,6 +8,8 @@ import {
   ForgotPasswordRequestDto,
   VerifiedAcccountDto,
 } from './dto';
+import { SignupEmailConfirmDto } from './dto/signup-email-confirm.dto';
+import { SignupEmailPrepareDto } from './dto/signup-email-prepare.dto';
 import { IEmailConfig } from './interface/IEmailConfig';
 
 @Injectable()
@@ -19,6 +21,24 @@ export class EmailAuthService {
     @Inject(ConfigService) private readonly configService: ConfigService,
   ) {
     this.emailConfig = this.configService.get('email');
+  }
+
+  async signupEmailPrepare(dto: SignupEmailPrepareDto, from?: string) {
+    return this.mailService.send({
+      from: from || this.emailConfig.defaultSender,
+      to: dto.email,
+      templateId: this.emailConfig.templates.signupEmailPrepare,
+      dynamicTemplateData: dto,
+    });
+  }
+
+  async signupEmailConfirm(dto: SignupEmailConfirmDto, from?: string) {
+    return this.mailService.send({
+      from: from || this.emailConfig.defaultSender,
+      to: dto.email,
+      templateId: this.emailConfig.templates.signupEmailConfirm,
+      dynamicTemplateData: dto,
+    });
   }
 
   async createdAccount(dto: CreatedAcccountDto, from?: string) {

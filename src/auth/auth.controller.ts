@@ -22,6 +22,8 @@ import { ForgotPasswordRequestDto } from './dto/forgot-password-request.dto';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { LoginDto } from './dto/login.dto';
 import { SignupConfirmDto } from './dto/signup-confirm.dto';
+import { SignupEmailConfirmDto } from './dto/signup-email-confirm.dto';
+import { SignupPrepareDto as SignupEmailPrepareDto } from './dto/signup-prepare.dto';
 import { SignUpDto } from './dto/signup.dto';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 
@@ -32,6 +34,18 @@ export class AuthController {
     @Inject(UsersService) private readonly usersService: UsersService,
     @Inject(AuthService) private readonly authService: AuthService,
   ) {}
+
+  @Public()
+  @Post('signup/email-prepare')
+  signupEmailPrepare(@Body() dto: SignupEmailPrepareDto) {
+    return this.authService.signupEmailPrepare(dto);
+  }
+
+  @Public()
+  @Post('signup/email-confirm')
+  signupEmailConfirm(@Body() dto: SignupEmailConfirmDto) {
+    return this.authService.signupEmailConfirm(dto);
+  }
 
   @Public()
   @Post('signup')
