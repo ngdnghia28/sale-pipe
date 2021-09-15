@@ -11,9 +11,12 @@ import { UsersService } from 'src/users/users.service';
 import * as request from 'supertest';
 import { users } from './fixtures/entity/users';
 import { provideConnection, TestUtils } from './utils';
+import * as faker from 'faker';
+import { SignupPrepareTokenService } from 'src/auth/signup-prepare-token.service';
 
 describe('Auth (e2e)', () => {
   let app: INestApplication;
+  let signupPrepareTokenService: SignupPrepareTokenService;
   let signupTokenService: SignupTokenService;
   let forgotPasswordTokenService: ForgotPasswordTokenService;
   let userService: UsersService;
@@ -40,6 +43,7 @@ describe('Auth (e2e)', () => {
 
     app = moduleFixture.createNestApplication();
     testUtils = moduleFixture.get<TestUtils>(TestUtils);
+    signupPrepareTokenService = app.get(SignupPrepareTokenService);
     signupTokenService = app.get(SignupTokenService);
     forgotPasswordTokenService = app.get(ForgotPasswordTokenService);
     await testUtils.reloadFixtures();
@@ -47,66 +51,73 @@ describe('Auth (e2e)', () => {
     emailAuthService = app.get(EmailAuthService);
     emailAuthService.createdAccount = jest.fn();
     emailAuthService.forgotPasswordRequest = jest.fn();
+    emailAuthService.signupEmailPrepare = jest.fn();
+    emailAuthService.signupEmailConfirm = jest.fn();
+    emailAuthService.changePasswordRequest = jest.fn();
+    emailAuthService.changedPassword = jest.fn();
+    emailAuthService.forgotPasswordRequest = jest.fn();
     await Promise.all(
       users.map((u: any) => {
         return userService.create(u);
       }),
     );
     await app.init();
-  }, 10000);
+  }, 20000);
 
   afterAll(async () => {
     await app.close();
   });
 
   describe('Signup (e2e)', () => {
-    it('/auth/signup (POST): Can register new account', async () => {
-      const response = await request(app.getHttpServer())
-        .post('/auth/signup')
-        .send({
-          type: 'SDR',
-          username: 'user7',
-          email: 'user7@gmail.com',
-          password: 'password',
-          firstName: 'user7',
-          lastName: 'user7',
-        });
-      expect(response.status).toBe(201);
-      expect(response.body.username).toBeDefined();
-      expect(response.body.password).toBeUndefined();
+    describe('Signup old flow (e2e)', () => {
+      it('/auth/signup (POST): Can register new account', async () => {
+        const response = await request(app.getHttpServer())
+          .post('/auth/signup')
+          .send({
+            type: 'SDR',
+            username: 'user7',
+            email: 'user7@gmail.com',
+            password: 'password',
+            firstName: 'user7',
+            lastName: 'user7',
+          });
+        expect(response.status).toBe(201);
+        expect(response.body.username).toBeDefined();
+        expect(response.body.password).toBeUndefined();
+      });
+
+      it('/auth/signup (POST): Cannot register new account with same email', async () => {
+        const response = await request(app.getHttpServer())
+          .post('/auth/signup')
+          .send({
+            type: 'SDR',
+            username: 'user7',
+            email: 'user7@gmail.com',
+            password: 'password',
+            firstName: 'user7',
+            lastName: 'user7',
+          });
+        expect(response.status).toBe(500);
+      });
+
+      it('/auth/signup (POST): Remove password from response', async () => {
+        const response = await request(app.getHttpServer())
+          .post('/auth/signup')
+          .send({
+            type: 'SDR',
+            username: 'user5',
+            email: 'user5@gmail.com',
+            password: 'password',
+            firstName: 'user5',
+            lastName: 'user5',
+          });
+        expect(response.status).toBe(201);
+        expect(response.body).toBeDefined();
+        expect(response.body.password).toBeUndefined();
+      });
     });
 
-    it('/auth/signup (POST): Cannot register new account with same email', async () => {
-      const response = await request(app.getHttpServer())
-        .post('/auth/signup')
-        .send({
-          type: 'SDR',
-          username: 'user7',
-          email: 'user7@gmail.com',
-          password: 'password',
-          firstName: 'user7',
-          lastName: 'user7',
-        });
-      expect(response.status).toBe(500);
-    });
-
-    it('/auth/signup (POST): Remove password from response', async () => {
-      const response = await request(app.getHttpServer())
-        .post('/auth/signup')
-        .send({
-          type: 'SDR',
-          username: 'user5',
-          email: 'user5@gmail.com',
-          password: 'password',
-          firstName: 'user5',
-          lastName: 'user5',
-        });
-      expect(response.status).toBe(201);
-      expect(response.body).toBeDefined();
-      expect(response.body.password).toBeUndefined();
-    });
-
-    describe('Confirm account (e2e)', () => {
+    describe('Confirm old account (e2e)', () => {
       it('/auth/signup/confirm (POST): Can confirm account with correct code', async () => {
         const response = await request(app.getHttpServer())
           .post('/auth/signup')
@@ -189,6 +200,105 @@ describe('Auth (e2e)', () => {
 
         expect(confirmResponse.status).toBe(400);
       }, 10000);
+    });
+
+    describe('Signup new flow (e2e)', () => {
+      it('/auth/signup/email-prepare (POST): Can prepare new account', async () => {
+        const response = await request(app.getHttpServer())
+          .post('/auth/signup/email-prepare')
+          .send({
+            email: faker.internet.email(),
+          });
+        expect(response.status).toBe(201);
+      });
+
+      it('/auth/signup/email-prepare (POST): Cannot prepare new account with same email', async () => {
+        const email = faker.internet.email();
+        const response = await request(app.getHttpServer())
+          .post('/auth/signup/email-prepare')
+          .send({
+            email,
+          });
+        expect(response.status).toBe(201);
+
+        const response2 = await request(app.getHttpServer())
+          .post('/auth/signup/email-prepare')
+          .send({
+            email,
+          });
+        expect(response2.status).toBe(500);
+      });
+
+      it('/auth/signup/email-prepare (POST): Cannot prepare new account with same email with exist user', async () => {
+        const email = faker.internet.email();
+        const response = await request(app.getHttpServer())
+          .post('/auth/signup')
+          .send({
+            type: 'SDR',
+            username: faker.internet.userName(),
+            email,
+            password: faker.internet.password(),
+            firstName: faker.name.findName(),
+            lastName: faker.name.lastName(),
+          });
+        expect(response.status).toBe(201);
+
+        const response2 = await request(app.getHttpServer())
+          .post('/auth/signup/email-prepare')
+          .send({
+            email,
+          });
+        expect(response2.status).toBe(400);
+      });
+
+      it('/auth/signup/email-confirm (POST): Can confirm new account', async () => {
+        const email = faker.internet.email();
+        const response = await request(app.getHttpServer())
+          .post('/auth/signup/email-prepare')
+          .send({
+            email,
+          });
+        expect(response.status).toBe(201);
+
+        const token = await signupPrepareTokenService.findByEmail(email);
+        expect(token).toBeDefined();
+
+        const confirmResponse = await request(app.getHttpServer())
+          .post('/auth/signup/email-confirm')
+          .send({
+            code: token.code,
+            type: 'SDR',
+            username: faker.internet.userName(),
+            email,
+            password: faker.internet.password(),
+            firstName: faker.name.firstName(),
+            lastName: faker.name.lastName(),
+          });
+        expect(confirmResponse.status).toBe(201);
+      });
+
+      it('/auth/signup/email-confirm (POST): Can not confirm with wrong code', async () => {
+        const email = faker.internet.email();
+        const response = await request(app.getHttpServer())
+          .post('/auth/signup/email-prepare')
+          .send({
+            email,
+          });
+        expect(response.status).toBe(201);
+
+        const confirmResponse = await request(app.getHttpServer())
+          .post('/auth/signup/email-confirm')
+          .send({
+            code: faker.datatype.uuid(),
+            type: 'SDR',
+            username: faker.internet.userName(),
+            email,
+            password: faker.internet.password(),
+            firstName: faker.name.firstName(),
+            lastName: faker.name.lastName(),
+          });
+        expect(confirmResponse.status).toBe(404);
+      });
     });
 
     describe('Forgot password (e2e)', () => {
