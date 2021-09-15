@@ -33,6 +33,8 @@ email:
   apiKey: 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
   defaultSender: nghia.ngd28@gmail.com
   templates:
+    signupEmailPrepare: d-aee9f6dd0d124980aeaec7a1e578bbe7
+    signupEmailConfirm: d-268eae88c6b6493eabe1454aa4106a38
     forgotPasswordRequestId: d-828796a5641248218dd0fb663d6987c8
     changePasswordRequestId: d-17eb9d4fb5cb4f0eb414ea5f53cc9480
     changedPasswordId: d-e63325a15e1e4ceda64868dec45442b1
