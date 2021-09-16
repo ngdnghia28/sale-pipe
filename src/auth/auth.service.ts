@@ -35,7 +35,7 @@ export class AuthService {
 
   async signupEmailPrepare(dto: SignupPrepareDto) {
     const token = await this.signupPrepareTokenService.create(dto.email);
-    return this.emailAuthService.signupEmailPrepare({
+    await this.emailAuthService.signupEmailPrepare({
       email: dto.email,
       code: token.code,
     });

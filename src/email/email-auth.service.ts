@@ -27,7 +27,7 @@ export class EmailAuthService {
     return this.mailService.send({
       from: from || this.emailConfig.defaultSender,
       to: dto.email,
-      templateId: this.emailConfig.templates.signupEmailPrepare,
+      templateId: this.emailConfig.templates.signupEmailPrepareId,
       dynamicTemplateData: dto,
     });
   }
@@ -36,7 +36,7 @@ export class EmailAuthService {
     return this.mailService.send({
       from: from || this.emailConfig.defaultSender,
       to: dto.email,
-      templateId: this.emailConfig.templates.signupEmailConfirm,
+      templateId: this.emailConfig.templates.signupEmailConfirmId,
       dynamicTemplateData: dto,
     });
   }

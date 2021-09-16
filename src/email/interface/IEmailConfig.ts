@@ -5,8 +5,8 @@ export interface IEmailConfig {
     forgotPasswordRequestId: string;
     changePasswordRequestId: string;
     changedPasswordId: string;
-    signupEmailPrepare: string;
-    signupEmailConfirm: string;
+    signupEmailPrepareId: string;
+    signupEmailConfirmId: string;
     createdAccountId: string;
     verifiedAccountId: string;
   };

@@ -13,30 +13,30 @@ db:
 
   test:
     type: "mysql"
-    host: "127.0.0.1"
+    host: "localhost"
     port: 3306
-    database: "test"
-    username: "devblock"
-    password: "Abc123456"
+    database: "salepipe"
+    username: "salepipe"
+    password: "12345678"
     logging: false
 
 auth:
   signup:
-    expiresIn: "24"   # hours
+    expiresIn: "24" # hours
   forgotPassword:
-    expiresIn: "24"   # hours
+    expiresIn: "24" # hours
   secret: "12345"
   signOptions:
     expiresIn: "0.5d"
 
 email:
-  apiKey: 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
-  defaultSender: nghia.ngd28@gmail.com
+  apiKey: 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
+  defaultSender: igor.shevk@gmail.com
   templates:
-    signupEmailPrepare: d-aee9f6dd0d124980aeaec7a1e578bbe7
-    signupEmailConfirm: d-268eae88c6b6493eabe1454aa4106a38
-    forgotPasswordRequestId: d-828796a5641248218dd0fb663d6987c8
-    changePasswordRequestId: d-17eb9d4fb5cb4f0eb414ea5f53cc9480
-    changedPasswordId: d-e63325a15e1e4ceda64868dec45442b1
-    createdAccountId: d-f7b7b3d72c0b4edcbd2d13ab71106c71
-    verifiedAccountId: d-4461a24676b24ebcb5eb20a2f69d398c
+    signupEmailPrepareId: d-4c6c1af94ab34713903951a211405c56
+    signupEmailConfirmId: d-3f4e466b517747a9aae6f14ab49c4254
+    forgotPasswordRequestId: d-a8dad92a53344658a48f62e3a28b113d
+    changePasswordRequestId: d-fbdae86eae784583afc4ba3bb7544ce4
+    changedPasswordId: d-418359d170264e92b4efae046215d74d
+    createdAccountId: d-c82dfa89615d4ae586e556ef32ecef93
+    verifiedAccountId: d-396d1868d6674a5196a4a3590420c708
