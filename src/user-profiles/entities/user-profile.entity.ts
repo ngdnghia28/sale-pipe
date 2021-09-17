@@ -33,11 +33,11 @@ export class UserProfile extends Base {
   })
   isAvailable: boolean;
 
-  @Expose({
-    groups: ['owner'],
-  })
   @Column()
-  phone: string;
+  firstName: string;
+
+  @Column()
+  lastName: string;
 
   @Expose({
     groups: ['owner'],
@@ -57,26 +57,7 @@ export class UserProfile extends Base {
     groups: ['owner'],
   })
   @Column()
-  rate: string;
-
-  @Expose({
-    groups: ['owner'],
-  })
-  @Column()
-  hoursPerWeek: number;
-
-  @Column({
-    nullable: true,
-  })
-  avatar?: string;
-
-  @Column()
-  headline: string;
-
-  @Column({
-    length: 1023,
-  })
-  bio: string;
+  phone: string;
 
   @Column()
   countryId: string;
@@ -123,16 +104,46 @@ export class UserProfile extends Base {
   @Column({
     nullable: true,
   })
-  saleChannel?: string;
+  saleChannels?: string;
 
   @Column({
     nullable: true,
   })
-  saleSkill?: string;
+  saleSkills?: string;
+
+  @Column({
+    nullable: true,
+  })
+  saleTools?: string;
+
+  @Column()
+  headline: string;
+
+  @Column({
+    length: 1023,
+  })
+  bio: string;
+
+  @Expose({
+    groups: ['owner'],
+  })
+  @Column()
+  rate: string;
 
   @Column({
     nullable: true,
     length: 1023,
   })
   workHistory?: string;
+
+  @Expose({
+    groups: ['owner'],
+  })
+  @Column()
+  hoursPerWeek: number;
+
+  @Column({
+    nullable: true,
+  })
+  avatar?: string;
 }
