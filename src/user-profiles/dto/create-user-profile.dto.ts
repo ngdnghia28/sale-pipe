@@ -22,27 +22,21 @@ export class CreateUserProfileDto {
   @IsUUID()
   userId: string;
 
-  @IsPhoneNumber()
-  phone: string;
+  @IsString()
+  firstName: string;
+
+  @IsString()
+  lastName: string;
 
   @IsEmail()
   email: string;
 
-  @IsNumberString()
-  rate: string;
-
-  @IsInt()
-  hours_per_week: number;
-
   @IsUrl()
   @IsOptional()
-  avatar?: string;
+  linkedIn?: string;
 
-  @IsString()
-  headline: string;
-
-  @IsString()
-  bio: string;
+  @IsPhoneNumber()
+  phone: string;
 
   @IsUUID()
   countryId: string;
@@ -59,6 +53,34 @@ export class CreateUserProfileDto {
   @Type(() => Id)
   @IsDefined()
   industries: Id[];
+
+  @IsString()
+  saleChannels?: string;
+
+  @IsString()
+  saleSkills?: string;
+
+  @IsString()
+  saleTools?: string;
+
+  @IsString()
+  headline: string;
+
+  @IsString()
+  bio: string;
+
+  @IsNumberString()
+  rate: string;
+
+  @IsString()
+  workHistory?: string;
+
+  @IsInt()
+  hoursPerWeek: number;
+
+  @IsUrl()
+  @IsOptional()
+  avatar?: string;
 }
 
 export class CreateMyUserProfileDto extends OmitType(CreateUserProfileDto, [

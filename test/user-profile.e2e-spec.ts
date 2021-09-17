@@ -4,12 +4,15 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from 'src/app.module';
 import configuration from 'src/config/configuration';
 import { UserProfile } from 'src/user-profiles/entities/user-profile.entity';
+import { UsersService } from 'src/users/users.service';
 import * as request from 'supertest';
+import { users } from './fixtures/entity/users';
 import { provideConnection, TestUtils } from './utils';
 
 describe('User-profiles (e2e)', () => {
   let app: INestApplication;
   let testUtils: TestUtils;
+  let userService: UsersService;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -30,10 +33,17 @@ describe('User-profiles (e2e)', () => {
     }).compile();
 
     app = moduleFixture.createNestApplication();
+    userService = app.get(UsersService);
     testUtils = moduleFixture.get<TestUtils>(TestUtils);
     await testUtils.reloadFixtures();
     await app.init();
-  });
+
+    await Promise.all(
+      users.map((u: any) => {
+        return userService.create(u);
+      }),
+    );
+  }, 20000);
 
   afterAll(async () => {
     await app.close();
@@ -334,6 +344,10 @@ describe('User-profiles (e2e)', () => {
               id: '0ca30200-b277-4912-a3f4-cf1e9e71764c',
             },
           ],
+          saleChannels: 'online',
+          saleSkills: 'ads',
+          saleTools: 'jira,crm',
+          workHistory: 'No work history',
         });
       expect(response.status).toBe(201);
 
@@ -390,6 +404,10 @@ describe('User-profiles (e2e)', () => {
               id: '0ca30200-b277-4912-a3f4-cf1e9e71764c',
             },
           ],
+          saleChannels: 'online',
+          saleSkills: 'ads',
+          saleTools: 'jira,crm',
+          workHistory: 'No work history',
         });
       expect(response.status).toBe(201);
 
@@ -447,6 +465,10 @@ describe('User-profiles (e2e)', () => {
               id: '0ca30200-b277-4912-a3f4-cf1e9e71764c',
             },
           ],
+          saleChannels: 'online',
+          saleSkills: 'ads',
+          saleTools: 'jira,crm',
+          workHistory: 'No work history',
         });
       expect(response.status).toBe(201);
 
