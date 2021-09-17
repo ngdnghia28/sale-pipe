@@ -3,12 +3,15 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from 'src/app.module';
 import configuration from 'src/config/configuration';
+import { UsersService } from 'src/users/users.service';
 import * as request from 'supertest';
+import { users } from './fixtures/entity/users';
 import { provideConnection, TestUtils } from './utils';
 
 describe('Company-profiles (e2e)', () => {
   let app: INestApplication;
   let testUtils: TestUtils;
+  let userService: UsersService;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -31,8 +34,15 @@ describe('Company-profiles (e2e)', () => {
     app = moduleFixture.createNestApplication();
     testUtils = moduleFixture.get<TestUtils>(TestUtils);
     await testUtils.reloadFixtures();
+    userService = app.get(UsersService);
     await app.init();
-  });
+
+    await Promise.all(
+      users.map((u: any) => {
+        return userService.create(u);
+      }),
+    );
+  }, 20000);
 
   afterAll(async () => {
     await app.close();
@@ -244,7 +254,7 @@ describe('Company-profiles (e2e)', () => {
         .delete('/company-profiles/123')
         .set('Authorization', `Bearer ${adminToken}`);
 
-      expect(response.status).toBe(204);
+      expect(response.status).toBe(404);
     });
   });
 });
