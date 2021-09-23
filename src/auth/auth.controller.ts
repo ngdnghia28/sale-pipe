@@ -7,7 +7,7 @@ import {
   Inject,
   Post,
   Request,
-  UseGuards,
+  UseGuards
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { UseRoles } from 'nest-access-control';
@@ -21,10 +21,9 @@ import { ChangePasswordRequestDto } from './dto/change-password-request.dto';
 import { ForgotPasswordRequestDto } from './dto/forgot-password-request.dto';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { LoginDto } from './dto/login.dto';
-import { SignupConfirmDto } from './dto/signup-confirm.dto';
-import { SignupEmailConfirmDto } from './dto/signup-email-confirm.dto';
+import { SignupCheckCodeDto } from './dto/signup-check-code.dto';
 import { SignupPrepareDto as SignupEmailPrepareDto } from './dto/signup-prepare.dto';
-import { SignUpDto } from './dto/signup.dto';
+import { SignupSignupDto } from './dto/signup-signup.dto';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 
 @ApiTags('Auth')
@@ -33,7 +32,7 @@ export class AuthController {
   constructor(
     @Inject(UsersService) private readonly usersService: UsersService,
     @Inject(AuthService) private readonly authService: AuthService,
-  ) {}
+  ) { }
 
   @Public()
   @Post('signup/email-prepare')
@@ -42,21 +41,15 @@ export class AuthController {
   }
 
   @Public()
+  @Post('signup/email-check')
+  signupEmailCheck(@Body() dto: SignupCheckCodeDto) {
+    return this.authService.check(dto);
+  }
+
+  @Public()
   @Post('signup/email-confirm')
-  signupEmailConfirm(@Body() dto: SignupEmailConfirmDto) {
+  signupEmailConfirm(@Body() dto: SignupSignupDto) {
     return this.authService.signupEmailConfirm(dto);
-  }
-
-  @Public()
-  @Post('signup')
-  signup(@Body() dto: SignUpDto) {
-    return this.authService.signup(dto);
-  }
-
-  @Public()
-  @Post('signup/confirm')
-  signupConfirm(@Body() dto: SignupConfirmDto) {
-    return this.authService.verify(dto.code);
   }
 
   @Public()

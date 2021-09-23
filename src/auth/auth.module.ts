@@ -15,6 +15,8 @@ import { ForgotPasswordToken } from './entities/forgot-password-token.entity';
 import { ForgotPasswordTokenService } from './forgot-password-token.service';
 import { SignupPrepareToken } from './entities/signup-prepare-token.entity';
 import { SignupPrepareTokenService } from './signup-prepare-token.service';
+import { UserProfilesModule } from 'src/user-profiles/user-profiles.module';
+import { CompanyProfilesModule } from 'src/company-profiles/company-profiles.module';
 
 @Module({
   imports: [
@@ -33,6 +35,8 @@ import { SignupPrepareTokenService } from './signup-prepare-token.service';
     }),
     UsersModule,
     EmailModule,
+    UserProfilesModule,
+    CompanyProfilesModule,
   ],
   providers: [
     AuthService,
